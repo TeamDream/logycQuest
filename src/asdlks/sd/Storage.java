@@ -4,6 +4,7 @@
  */
 package asdlks.sd;
 
+import android.R;
 import java.util.ArrayList;
 
 /**
@@ -33,6 +34,7 @@ public class Storage {
     }
     
     public String getCurrAnswer() {
+        //return R.strin
         return answers.get(currText);
     }
     public String getCurrQuection() {
