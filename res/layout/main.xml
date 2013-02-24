@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background ="#0000FF"
+    >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text1"
+        />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text2"
+        />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/linearLayout1" 
+        android:orientation="horizontal"
+        android:translationY="350px">
+        <Button 
+            android:id="@+id/button_left"
+            android:onClick="onClickLeft"
+            android:layout_width="60px"
+            android:layout_height="wrap_content"
+            android:text="Prev"      
+            android:translationX="0px">
+        </Button>
+        <Button 
+            android:id="@+id/button_answer"
+            android:onClick="onClick"
+            android:layout_width="100px"
+            android:layout_height="wrap_content"     
+            android:translationX="60px"
+            android:text="show answer">
+        </Button>
+        <Button 
+            android:id="@+id/button_right"
+            android:onClick="onClickRight"
+            android:layout_width="60px"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:translationX="100px">
+        </Button>
+    </LinearLayout> 
+</LinearLayout>
