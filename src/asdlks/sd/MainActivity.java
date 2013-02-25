@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.main);
         
-        st = new Storage();
+        st = new Storage(this);
         TextView text = (TextView) findViewById(R.id.text1);
         text.setText(st.getCurrQuection());
     }
