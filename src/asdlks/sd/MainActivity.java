@@ -1,6 +1,7 @@
 package asdlks.sd;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -33,6 +34,10 @@ public class MainActivity extends Activity {
 
         TextView text = (TextView) findViewById(R.id.text2);
         text.setText(st.getCurrAnswer());
+        
+        this.finish();
+        Intent intent = new Intent(this, SecondActivity.class);  
+        startActivity(intent); 
     }
     public void onClickLeft(View view) {
         st.moveLeft();
