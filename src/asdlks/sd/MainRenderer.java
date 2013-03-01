@@ -42,7 +42,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         gl.glClearColor(mRed, mGreen, mBlue, 1.0f);
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-       // gl.glLoadIdentity();
+        gl.glLoadIdentity();
         if (initialized) {
             for (int i = 0; i < 9; i++) {
                 stickers[i].draw(gl, textures[0]);
@@ -64,9 +64,6 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),idpicture);  
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
         bitmap.recycle();
-//       gl.glTexEnvx(GL10.GL_TEXTURE_ENV,
-//       GL10.GL_TEXTURE_ENV_MODE,
-//       GL10.GL_MODULATE); 
     }
 
     void setColor(float r, float g, float b) {
@@ -83,9 +80,9 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         for (int i = 0; i < 9; i++) {
 
 
-            view_x = (MAX_WIDTH / 4) * (i % 3);
+            view_x = (MAX_WIDTH / 4) * (i % 3) + MAX_WIDTH/8;
             if (i % 3 == 0) {
-                view_y = (MAX_WIDTH / 4) * (i / 3);
+                view_y = (MAX_WIDTH / 4) * (i / 3) ;
             }
             stickers[i].setScreenParams(MAX_WIDTH, MAX_HEIGHT);
             stickers[i].init(view_x, view_y);

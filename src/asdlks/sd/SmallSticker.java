@@ -21,10 +21,10 @@ public class SmallSticker {
     FloatBuffer rectBuffer;
     //texture willl be here
     float[] rect = {
-        0, 0, 0, // A
-        1, 0, 0, // B
-        1, 1, 0, // C
-        0, 1, 0  //D?
+        -1f, -1f, 0, // A
+        1f, -1f, 0, // B
+        1f, 1f, 0, // C
+        -1f, 1f, 0  //D?
     };
 
     SmallSticker() {
@@ -34,12 +34,6 @@ public class SmallSticker {
         bb.order(ByteOrder.nativeOrder());
         texcoordBuffer = bb.asFloatBuffer();
 
-        //float[] texcoordBufferArray = {0, 1, 0.75f, 0.75f, 1, 0, 0.25f, 0.25f};
-//        float[] texcoordBufferArray = {0, 0, 0, // A
-//        1, 0, 0, // B
-//        1, 1, 0, // C
-//        0, 1, 0  //D?
-//        };
         float [] texcoordBufferArray={0,1,  1,1,  1,0,  0,0,0.5f}; //альфа=1
         texcoordBuffer.position(0);
         texcoordBuffer.put(texcoordBufferArray);
@@ -62,12 +56,13 @@ public class SmallSticker {
         x = _x;
         y = MAX_HEIGHT / 2 - _y;// as temp solution
 
-        width = MAX_WIDTH / 3;
-        height = width;//MAX_HEIGHT/3;
+        width = MAX_WIDTH / 6;
+        height = width; 
     }
 
     void draw(GL10 gl, int texture_id) {
         gl.glViewport(x, y, width, height);
+
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glBindTexture(GL10.GL_TEXTURE_2D, texture_id);
         gl.glTexEnvx(GL10.GL_TEXTURE_ENV,
@@ -82,23 +77,16 @@ public class SmallSticker {
         
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glTexCoordPointer(2,GL10.GL_FLOAT,0,texcoordBuffer);
-       // gl.glRotatef(0.5f, 1, 0, 0);
+       //width++;
+       // height++;
         gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, 4);
-        //        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, 4);
-        // gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-//        gl.glLoadIdentity();
-//        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-//
-//        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, rectBuffer);
-//        gl.glDrawArrays(GL10.GL_TRIANGLE_FAN, 0, 4);
-
     }
     //mouse click on viewport( positive coordinate part)
 
     boolean mouse_on(float _x, float _y) {
 
-        if (_x > x + width / 2 && _x < x + width) {
-            if (_y < MAX_HEIGHT - height / 2 - y && _y > MAX_HEIGHT - height - y) {
+        if (_x > x && _x < x + width) {
+            if (_y < MAX_HEIGHT - y && _y > MAX_HEIGHT - height - y) {
                 return true;
             }
         }
