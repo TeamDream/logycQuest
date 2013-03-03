@@ -1,52 +1,25 @@
 package dreamteam.logicquest;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-
 
 public class MainActivity extends Activity {
-    Storage st;
+
+    public GLView mGLView;
+    public static MainActivity singleton = null;
+
+    public MainActivity() {
+        singleton = this;
+    }
+
     /**
      * Called when the activity is first created.
      */
-    public void updateView() {
-        TextView text = (TextView) findViewById(R.id.text1);
-        text.setText(st.getCurrQuection());
-        text = (TextView) findViewById(R.id.text2);
-        text.setText("");
-    }
-    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-
-        setContentView(R.layout.main);
-        
-        st = new Storage(this);
-        TextView text = (TextView) findViewById(R.id.text1);
-        text.setText(st.getCurrQuection());
-    }
-
-    public void onClick(View view) {
-
-        TextView text = (TextView) findViewById(R.id.text2);
-        text.setText(st.getCurrAnswer());
-        
-        this.finish();
-        Intent intent = new Intent(this, SecondActivity.class);  
-        startActivity(intent); 
-    }
-    public void onClickLeft(View view) {
-        st.moveLeft();
-        updateView();
-    }
-    
-    public void onClickRight(View view) {
-        st.moveRight();
-        updateView(); 
+        mGLView = new GLView(this);
+        setContentView(mGLView);
     }
 }

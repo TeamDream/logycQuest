@@ -1,4 +1,4 @@
-package vgvgf.g;
+package dreamteam.logicquest;
 
 /*
  * To change this template, choose Tools | Templates
