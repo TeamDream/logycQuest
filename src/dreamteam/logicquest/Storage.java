@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package asdlks.sd;
+package dreamteam.logicquest;
 
 import java.util.ArrayList;
-import android.app.Activity;
+import android.app.Activity; 
 /**
  *
  * @author user
