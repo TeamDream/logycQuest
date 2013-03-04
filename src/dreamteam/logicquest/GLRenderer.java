@@ -4,84 +4,116 @@
  */
 package dreamteam.logicquest;
 
-import android.app.DownloadManager;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLU;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
+import android.os.SystemClock;
 
 public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
-    int mWidth;
-    int mHeight;
-    Square mSquare;
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * android.opengl.GLSurfaceView.GLRenderer#onSurfaceCreated(javax.
-     * microedition.khronos.opengles.GL10, javax.microedition.khronos.
-     * egl.EGLConfig)
-     */
+    enum SceneType {
 
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Set the background color to black ( rgba ).
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);  // OpenGL docs.
-        // Enable Smooth Shading, default not really needed.
-        gl.glShadeModel(GL10.GL_SMOOTH);// OpenGL docs.
-        // Depth buffer setup.
-        gl.glClearDepthf(1.0f);// OpenGL docs.
-        // Enables depth testing.
-        gl.glEnable(GL10.GL_DEPTH_TEST);// OpenGL docs.
-        // The type of depth testing to do.
-        gl.glDepthFunc(GL10.GL_LEQUAL);// OpenGL docs.
-        // Really nice perspective calculations.
-        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, // OpenGL docs.
-                GL10.GL_NICEST);
-        mSquare = new Square();
+        MENU_SCENE, QUEST_SCENE, ANIMATION_BETWEEN_SCENES
+    }
+    MenuScene mMenuScene;
+    private SceneType mSceneType = SceneType.MENU_SCENE;
+    /**
+     * Store the model matrix. This matrix is used to move models from object
+     * space (where each model can be thought of being located at the center of
+     * the universe) to world space.
+     */
+    public float[] mModelMatrix = new float[16];
+    /**
+     * Store the view matrix. This can be thought of as our camera. This matrix
+     * transforms world space to eye space; it positions things relative to our
+     * eye.
+     */
+    public float[] mViewMatrix = new float[16];
+    /**
+     * Store the projection matrix. This is used to project the scene onto a 2D
+     * viewport.
+     */
+    public float[] mProjectionMatrix = new float[16];
+    /**
+     * Allocate storage for the final combined matrix. This will be passed into
+     * the shader program.
+     */
+    public float[] mMVPMatrix = new float[16];
+
+    /**
+     * Initialize the model data.
+     */
+    /**
+     * Initialize the model data.
+     */
+    public GLRenderer() {
+
+        mMenuScene = new MenuScene();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * android.opengl.GLSurfaceView.GLRenderer#onDrawFrame(javax.
-     * microedition.khronos.opengles.GL10)
-     */
-    public void onDrawFrame(GL10 gl) {
-        // Clears the screen and depth buffer.
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | // OpenGL docs.
-                GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glTranslatef(0, 0, -4); // OpenGL docs
-        mSquare.draw(gl);
-        MainActivity.singleton.mGLView.requestRender();
+    @Override
+    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+        // Set the background clear color to gray.
+        GLES20.glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+
+        // Position the eye behind the origin.
+        final float eyeX = 0.0f;
+        final float eyeY = 0.0f;
+        final float eyeZ = 1.5f;
+
+        // We are looking toward the distance
+        final float lookX = 0.0f;
+        final float lookY = 0.0f;
+        final float lookZ = -5.0f;
+
+        // Set our up vector. This is where our head would be pointing were we holding the camera.
+        final float upX = 0.0f;
+        final float upY = 1.0f;
+        final float upZ = 0.0f;
+
+        // Set the view matrix. This matrix can be said to represent the camera position.
+        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
+        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
+        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        mMenuScene.onSurfaceCreated(glUnused, config);
+
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * android.opengl.GLSurfaceView.GLRenderer#onSurfaceChanged(javax.
-     * microedition.khronos.opengles.GL10, int, int)
-     */
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        // Sets the current view port to the new size.
-        mWidth = width;
-        mHeight = height;
-        gl.glViewport(0, 0, width, height);// OpenGL docs.
+    @Override
+    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+        // Set the OpenGL viewport to the same size as the surface.
+        GLES20.glViewport(0, 0, width, height);
 
-        // Select the projection matrix
-        gl.glMatrixMode(GL10.GL_PROJECTION);// OpenGL docs.
-        // Reset the projection matrix
-        gl.glLoadIdentity();// OpenGL docs.
-        // Calculate the aspect ratio of the window
-        GLU.gluPerspective(gl, 45.0f,
-                (float) width / (float) height,
-                0.1f, 100.0f);
-        // Select the modelview matrix
-        gl.glMatrixMode(GL10.GL_MODELVIEW);// OpenGL docs.
-        // Reset the modelview matrix
-        gl.glLoadIdentity();// OpenGL docs.
+        // Create a new perspective projection matrix. The height will stay the same
+        // while the width will vary as per aspect ratio.
+        final float ratio = (float) width / height;
+        final float left = -ratio;
+        final float right = ratio;
+        final float bottom = -1.0f;
+        final float top = 1.0f;
+        final float near = 1.0f;
+        final float far = 10.0f;
+
+        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
-    
+
+    @Override
+    public void onDrawFrame(GL10 glUnused) {
+
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+        if (mSceneType == SceneType.MENU_SCENE) {
+            // Do a complete rotation every 10 seconds.
+            long time = SystemClock.uptimeMillis() % 10000L;
+
+            // Draw the triangle facing straight on.
+            Matrix.setIdentityM(mModelMatrix, 0);
+            mMenuScene.draw(this);
+        }
+    }
 }

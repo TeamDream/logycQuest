@@ -19,8 +19,7 @@ class GLView extends GLSurfaceView {
         super(context);
         singleton = this;
         //setEGLContextFactory(new ContextFactory());
-        setRenderer(new GLRenderer());
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     public void stop() {
@@ -28,5 +27,15 @@ class GLView extends GLSurfaceView {
             public void run() {
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }
