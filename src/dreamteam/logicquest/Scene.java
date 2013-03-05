@@ -34,17 +34,6 @@ public abstract class Scene {
      * Size of the color data in elements.
      */
     protected final int mColorDataSize = 4;
-    /**
-     * This will be used to pass in the transformation matrix.
-     */
-    protected int mMVPMatrixHandle;
-    /**
-     * This will be used to pass in model position information.
-     */
-    protected int mPositionHandle;
-    /**
-     * This will be used to pass in model color information.
-     */
-    protected int mColorHandle;
+
     public abstract void draw(GLRenderer aRenderer);
 }
