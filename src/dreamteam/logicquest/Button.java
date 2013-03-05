@@ -42,6 +42,7 @@ public class Button {
             0.0f, 1.0f, 0.0f, 1.0f,
             1.0f, 1.0f, 0.0f,
             1.0f, 0.0f, 0.0f, 1.0f};
+
         // Initialize the buffers.
         mVertices = ByteBuffer.allocateDirect(VerticesData.length * aScene.mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -49,7 +50,7 @@ public class Button {
         mVertices.put(VerticesData).position(0);
     }
 
-    public void scale(float aScaleParameterX,float aScaleParameterY, float aScaleParameterZ) {
+    public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
         mScaleParameterX = aScaleParameterX;
         mScaleParameterY = aScaleParameterY;
         mScaleParameterZ = aScaleParameterZ;
@@ -91,5 +92,22 @@ public class Button {
 
         GLES20.glUniformMatrix4fv(aRenderer.mMVPMatrixHandle, 1, false, aRenderer.mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
+    }
+
+    public boolean mouseOnClick(float _x, float _y) {
+        _x = _x * 2 - 1;
+        _y = _y * 2 - 1;
+        float l_b_x = (-1.0f + mTranslateX) * mScaleParameterX;
+        float l_b_y = (-1.0f + mTranslateY) * mScaleParameterY;
+
+        float r_t_x = (1.0f + mTranslateX) * mScaleParameterX;
+        float r_t_y = (1.0f + mTranslateY) * mScaleParameterY;
+
+        if (_x > l_b_x && _x < r_t_x) {
+            if (_y > l_b_y && _y < r_t_y) {
+                return true;
+            }
+        }
+        return false;
     }
 }

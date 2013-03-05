@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 public class MainActivity extends Activity {
@@ -30,9 +31,10 @@ public class MainActivity extends Activity {
         if (supportsEs2) {
             // Request an OpenGL ES 2.0 compatible context.
             mGLView.setEGLContextClientVersion(2);
-
             // Set the renderer to our demo renderer, defined below.
-            mGLView.setRenderer(new GLRenderer());
+            mGLView.setRenderer(GLRenderer.INSTANSE);
+            setContentView(mGLView);
+            mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         } else {
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.

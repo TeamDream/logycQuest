@@ -15,13 +15,14 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
-
+public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
+    INSTANSE;
     enum SceneType {
 
         MENU_SCENE, QUEST_SCENE, ANIMATION_BETWEEN_SCENES
     }
     MenuScene mMenuScene;
+    private float colors[] = new float[4];//JUST FOR TESTING MOUS EVENT.
     private SceneType mSceneType = SceneType.MENU_SCENE;
     /**
      * Store the model matrix. This matrix is used to move models from object
@@ -57,14 +58,14 @@ public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      * This will be used to pass in model color information.
      */
     protected int mColorHandle;
-
+    protected int programHandle;
     /**
      * Initialize the model data.
      */
     /**
      * Initialize the model data.
      */
-    public GLRenderer() {
+    private GLRenderer() {
 
         mMenuScene = new MenuScene();
     }
@@ -171,7 +172,7 @@ public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         }
 
         // Create a program object and store the handle to it.
-        int programHandle = GLES20.glCreateProgram();
+         programHandle = GLES20.glCreateProgram();
 
         if (programHandle != 0) {
             // Bind the vertex shader to the program.
@@ -183,7 +184,6 @@ public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
             // Bind attributes
             GLES20.glBindAttribLocation(programHandle, 0, "a_Position");
             GLES20.glBindAttribLocation(programHandle, 1, "a_Color");
-
             // Link the two shaders together into a program.
             GLES20.glLinkProgram(programHandle);
 
@@ -235,6 +235,8 @@ public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 glUnused) {
 
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+
+       // GLES20.glClearColor(mred, mgreen, mblue, 0.5f);
         if (mSceneType == SceneType.MENU_SCENE) {
             // Do a complete rotation every 10 seconds.
             long time = SystemClock.uptimeMillis() % 10000L;
@@ -244,4 +246,24 @@ public class GLRenderer implements android.opengl.GLSurfaceView.Renderer {
             mMenuScene.draw(this);
         }
     }
+    public void setColorBackground(float _mred, float _mgreen, float _mblue) {
+        colors[0] = _mred;
+        colors[1] = _mgreen;
+        colors[2] = _mblue;
+        colors[3] = 1.0f;
+        
+        ByteBuffer b1 = ByteBuffer.allocateDirect(16);
+        b1.order(ByteOrder.nativeOrder());
+        FloatBuffer vertexBuffer = b1.asFloatBuffer();
+        vertexBuffer.position(0);
+        vertexBuffer.put(colors);
+        vertexBuffer.position(0);
+        
+        //WTF???? Why it is not working?
+        GLES20.glEnableVertexAttribArray(mColorHandle);
+        GLES20.glVertexAttribPointer(mColorHandle, 4, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+        GLES20.glDisableVertexAttribArray(mColorHandle);
+        onDrawFrame(null);
+    }
+    
 }
