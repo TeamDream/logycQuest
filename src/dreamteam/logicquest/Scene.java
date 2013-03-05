@@ -42,4 +42,6 @@ public abstract class Scene {
     public abstract void onTouchMove(float aX, float aY);
 
     public abstract void onTouchUp(float aX, float aY);
+    public abstract void onClick(Button aButton);
+    
 }

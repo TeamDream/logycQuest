@@ -30,5 +30,6 @@ public class Button extends QuadImage {
 
     public void onTouchUp(Scene aScene, float aX, float aY) {
         scale(0.5f, 0.25f, 0.5f);
+        aScene.onClick(this);
     }
 }
