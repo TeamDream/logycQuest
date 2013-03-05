@@ -30,9 +30,8 @@ public class MainActivity extends Activity {
         if (supportsEs2) {
             // Request an OpenGL ES 2.0 compatible context.
             mGLView.setEGLContextClientVersion(2);
-
-            // Set the renderer to our demo renderer, defined below.
-            mGLView.setRenderer(new GLRenderer());
+            
+            mGLView.setGLRenderer(new GLRenderer());
         } else {
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.
@@ -55,4 +54,5 @@ public class MainActivity extends Activity {
         super.onPause();
         mGLView.onPause();
     }
+    
 }

@@ -36,4 +36,10 @@ public abstract class Scene {
     protected final int mColorDataSize = 4;
 
     public abstract void draw(GLRenderer aRenderer);
+
+    public abstract void onTouchDown(float aX, float aY);
+
+    public abstract void onTouchMove(float aX, float aY);
+
+    public abstract void onTouchUp(float aX, float aY);
 }
