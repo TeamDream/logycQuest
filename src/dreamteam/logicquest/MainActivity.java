@@ -57,4 +57,5 @@ public class MainActivity extends Activity {
         super.onPause();
         mGLView.onPause();
     }
+    
 }

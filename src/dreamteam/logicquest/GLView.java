@@ -15,13 +15,23 @@ import android.view.MotionEvent;
 class GLView extends GLSurfaceView {
 
     public static GLView singleton = null;
-    public GLRenderer mRenderer;
+    GLRenderer mRenderer;
+
     public GLView(Context context) {
         super(context);
         singleton = this;
+        //setEGLContextFactory(new ContextFactory());
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);           
 
+ 
     }
 
+    public void setGLRenderer(GLRenderer aRenderer)
+    {
+               // Set the renderer to our demo renderer, defined below.
+        mRenderer = aRenderer;
+        setRenderer(mRenderer);
+    }
     public void stop() {
         queueEvent(new Runnable() {
             public void run() {
@@ -38,23 +48,39 @@ class GLView extends GLSurfaceView {
     public void onPause() {
         super.onPause();
     }
-    
-        public boolean onTouchEvent(final MotionEvent event) {
-        queueEvent(new Runnable(){
-            public void run() {
-                if(GLRenderer.INSTANSE.mMenuScene.mButtons[0].mouseOnClick(event.getX() / getWidth(),
-                                event.getY() / getHeight()))
-                GLRenderer.INSTANSE.setColorBackground(event.getX() / getWidth(),
-                               event.getY() / getHeight(), 1.0f);
-                
-               // GLRenderer.INSTANSE.
-//                for(int i = 0; i < 9; i++) {
-//                    if(mRenderer.getSticker(i).mouse_on(event.getX(), event.getY())) {
-//                        mRenderer.setColor(event.getX() / getWidth(),
-//                                event.getY() / getHeight(), 1.0f);
-//                    }
-//                }
-            }});
-            return true;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        // MotionEvent reports input details from the touch screen
+        // and other input controls. In this case, you are only
+        // interested in events where the touch position changed.
+
+        final float x = e.getX();
+        final float y = e.getY();
+
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                queueEvent(new Runnable() {
+                    public void run() {
+                        mRenderer.onTouchDown(x, y);
+                    }
+                });
+                break;
+            case MotionEvent.ACTION_MOVE:
+                queueEvent(new Runnable() {
+                    public void run() {
+                        mRenderer.onTouchMove(x, y);
+                    }
+                });
+                break;
+            case MotionEvent.ACTION_UP:
+                queueEvent(new Runnable() {
+                    public void run() {
+                        mRenderer.onTouchUp(x, y);
+                    }
+                });
+                break;
         }
+        return true;
+    }
 }

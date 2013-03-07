@@ -213,11 +213,40 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
     }
 
+    public void onTouchDown(float aX, float aY)
+    {
+        switch(mSceneType)
+        {
+            case MENU_SCENE:
+                mMenuScene.onTouchDown(aX, aY);
+                break;
+        }
+    }
+    public void onTouchMove(float aX, float aY)
+    {
+                switch(mSceneType)
+        {
+            case MENU_SCENE:
+                mMenuScene.onTouchMove(aX, aY);
+                break;
+        }
+    }
+    public void onTouchUp(float aX, float aY)
+    {
+                switch(mSceneType)
+        {
+            case MENU_SCENE:
+                mMenuScene.onTouchUp(aX, aY);
+                break;
+        }
+    }
+    
+    
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
-
+        mMenuScene.onResize(width, height);
         // Create a new perspective projection matrix. The height will stay the same
         // while the width will vary as per aspect ratio.
         final float ratio = (float) width / height;
