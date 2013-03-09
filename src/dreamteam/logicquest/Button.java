@@ -36,7 +36,7 @@ public class Button extends QuadImage {
 
     public boolean mouseOnClick(float _x, float _y) {
         float x = _x * 2 - 1;
-        float y = (1 -_y) * 2 - 1;
+        float y = (1 - _y) * 2 - 1;
         float l_b_x = (-1.0f) * mScaleParameterX + mTranslateX;
         float l_b_y = (-1.0f) * mScaleParameterY + mTranslateY;
 

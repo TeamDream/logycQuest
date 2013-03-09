@@ -22,7 +22,7 @@ class GLView extends GLSurfaceView {
         //setEGLContextFactory(new ContextFactory());
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);           
 
- 
+
     }
 
     public void stop() {
@@ -48,8 +48,8 @@ class GLView extends GLSurfaceView {
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 
-        final float x = e.getX()/getWidth();
-        final float y = e.getY()/getHeight();
+        final float x = e.getX() / getWidth();
+        final float y = e.getY() / getHeight();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -62,7 +62,7 @@ class GLView extends GLSurfaceView {
             case MotionEvent.ACTION_MOVE:
                 queueEvent(new Runnable() {
                     public void run() {
-                       GLRenderer.INSTANSE.onTouchMove(x, y);
+                        GLRenderer.INSTANSE.onTouchMove(x, y);
                     }
                 });
                 break;
