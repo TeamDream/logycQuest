@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 class GLView extends GLSurfaceView {
 
     public static GLView singleton = null;
-    GLRenderer mRenderer;
 
     public GLView(Context context) {
         super(context);
@@ -26,12 +25,6 @@ class GLView extends GLSurfaceView {
  
     }
 
-    public void setGLRenderer(GLRenderer aRenderer)
-    {
-               // Set the renderer to our demo renderer, defined below.
-        mRenderer = aRenderer;
-        setRenderer(mRenderer);
-    }
     public void stop() {
         queueEvent(new Runnable() {
             public void run() {
@@ -55,28 +48,28 @@ class GLView extends GLSurfaceView {
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 
-        final float x = e.getX();
-        final float y = e.getY();
+        final float x = e.getX()/getWidth();
+        final float y = e.getY()/getHeight();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 queueEvent(new Runnable() {
                     public void run() {
-                        mRenderer.onTouchDown(x, y);
+                        GLRenderer.INSTANSE.onTouchDown(x, y);
                     }
                 });
                 break;
             case MotionEvent.ACTION_MOVE:
                 queueEvent(new Runnable() {
                     public void run() {
-                        mRenderer.onTouchMove(x, y);
+                       GLRenderer.INSTANSE.onTouchMove(x, y);
                     }
                 });
                 break;
             case MotionEvent.ACTION_UP:
                 queueEvent(new Runnable() {
                     public void run() {
-                        mRenderer.onTouchUp(x, y);
+                        GLRenderer.INSTANSE.onTouchUp(x, y);
                     }
                 });
                 break;

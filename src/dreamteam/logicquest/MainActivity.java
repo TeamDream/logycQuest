@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
             // Set the renderer to our demo renderer, defined below.
             mGLView.setRenderer(GLRenderer.INSTANSE);
             setContentView(mGLView);
-            mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+          //  mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         } else {
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.
