@@ -17,6 +17,7 @@ import java.nio.FloatBuffer;
 
 public class QuadImage {
 
+    protected GLRenderer mRenderer;
     private final FloatBuffer mVertices;
     public float[] mModelMatrix = new float[16];
     protected float mScaleParameterX = 1.0f;
@@ -25,8 +26,8 @@ public class QuadImage {
     protected float mTranslateX = 0.0f;
     protected float mTranslateY = 0.0f;
     protected float mTranslateZ = 0.0f;
-
-    public QuadImage(Scene aScene) {
+    public QuadImage(GLRenderer aRenderer) {
+        mRenderer = aRenderer;
         // This triangle is red, green, and blue.
         final float[] VerticesData = {
             // X, Y, Z, 
@@ -44,7 +45,7 @@ public class QuadImage {
             1.0f, 1.0f, 0.0f,
             1.0f, 0.0f, 0.0f, 1.0f};
         // Initialize the buffers.
-        mVertices = ByteBuffer.allocateDirect(VerticesData.length * aScene.mBytesPerFloat)
+        mVertices = ByteBuffer.allocateDirect(VerticesData.length * aRenderer.mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         mVertices.put(VerticesData).position(0);
@@ -66,17 +67,17 @@ public class QuadImage {
         mTranslateZ = aTranslateZ;
     }
 
-    public void draw(GLRenderer aRenderer, Scene aScene) {        // Pass in the position information
-        mVertices.position(aScene.mPositionOffset);
-        GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aScene.mPositionDataSize, GLES20.GL_FLOAT, false,
-                aScene.mStrideBytes, mVertices);
+    public void draw(GLRenderer aRenderer) {        // Pass in the position information
+        mVertices.position(aRenderer.mPositionOffset);
+        GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
+                aRenderer.mStrideBytes, mVertices);
 
         GLES20.glEnableVertexAttribArray(aRenderer.mPositionHandle);
 
         // Pass in the color information
-        mVertices.position(aScene.mColorOffset);
-        GLES20.glVertexAttribPointer(aRenderer.mColorHandle, aScene.mColorDataSize, GLES20.GL_FLOAT, false,
-                aScene.mStrideBytes, mVertices);
+        mVertices.position(aRenderer.mColorOffset);
+        GLES20.glVertexAttribPointer(aRenderer.mColorHandle, aRenderer.mColorDataSize, GLES20.GL_FLOAT, false,
+                aRenderer.mStrideBytes, mVertices);
 
         GLES20.glEnableVertexAttribArray(aRenderer.mColorHandle);
 

@@ -23,33 +23,32 @@ public class MenuScene extends Scene {
      */
     Button[] mButtons = new Button[3];
     QuadImage mBackground;
-
-    public MenuScene() {
+    public MenuScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
-        mBackground = new QuadImage(this);
+        mBackground = new QuadImage(aRenderer);
         mBackground.setTexture("some texture");
         for (int i = 0;
                 i < 3; ++i) {
-            mButtons[i] = new Button(this);
-            mButtons[i].translate(0.f, 1.f - i, 0.f);
-            mButtons[i].scale(0.5f, 0.25f, 0.5f);
+            mButtons[i] = new Button(aRenderer);
+            mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
+            mButtons[i].scale(5.0f, 2.5f, 1.0f);
         }
         mButtons[0].setName("StartGameButton");
         mButtons[1].setName("some name");
         mButtons[2].setName("some name");
     }
 
-    public void onResize(int aWidth, int aHeight) {
-        mBackground.scale((float) aWidth / aHeight * 1.5f, 1.f * 1.5f, 1.f);
+    public void onResize(GLRenderer aRenderer) {
+        mBackground.scale(aRenderer.mRatio * aRenderer.mScreenSize, aRenderer.mScreenSize, 1.f);
     }
 
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
     }
 
     public void draw(GLRenderer aRenderer) {
-        mBackground.draw(aRenderer, this);
+        mBackground.draw(aRenderer);
         for (Button button : mButtons) {
-            button.draw(aRenderer, this);
+            button.draw(aRenderer);
         }
     }
 

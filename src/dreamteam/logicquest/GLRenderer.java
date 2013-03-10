@@ -17,12 +17,39 @@ import android.os.SystemClock;
 
 public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     INSTANSE;
+        /**
+     * How many bytes per float.
+     */
+    protected final int mBytesPerFloat = 4;
+    /**
+     * How many elements per vertex.
+     */
+    protected final int mStrideBytes = 7 * mBytesPerFloat;
+    /**
+     * Offset of the position data.
+     */
+    protected final int mPositionOffset = 0;
+    /**
+     * Size of the position data in elements.
+     */
+    protected final int mPositionDataSize = 3;
+    /**
+     * Offset of the color data.
+     */
+    protected final int mColorOffset = 3;
+    /**
+     * Size of the color data in elements.
+     */
+    protected final int mColorDataSize = 4;
     enum SceneType {
 
         MENU_SCENE, QUEST_SCENE, ANIMATION_BETWEEN_SCENES
     }
     MenuScene mMenuScene;
     private float colors[] = new float[4];//JUST FOR TESTING MOUS EVENT.
+    
+    protected float mScreenSize = 10.f;
+    protected float mRatio  = 1.f;
     private SceneType mSceneType = SceneType.MENU_SCENE;
     /**
      * Store the model matrix. This matrix is used to move models from object
@@ -67,7 +94,7 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      */
     private GLRenderer() {
 
-        mMenuScene = new MenuScene();
+        mMenuScene = new MenuScene(this);
     }
 
     @Override
@@ -78,7 +105,8 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         // Position the eye behind the origin.
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
-        final float eyeZ = 1.5f;
+        final float eyeZ = mScreenSize;
+        
 
         // We are looking toward the distance
         final float lookX = 0.0f;
@@ -246,18 +274,19 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
-        mMenuScene.onResize(width, height);
         // Create a new perspective projection matrix. The height will stay the same
         // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
-        final float left = -ratio;
-        final float right = ratio;
+        mRatio = (float) width / height;
+        final float left = -mRatio;
+        final float right = mRatio;
         final float bottom = -1.0f;
         final float top = 1.0f;
         final float near = 1.0f;
         final float far = 10.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        
+        mMenuScene.onResize(this);
     }
 
     @Override
