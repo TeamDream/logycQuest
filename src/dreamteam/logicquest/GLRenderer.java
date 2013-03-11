@@ -15,9 +15,10 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
+public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
+
     INSTANSE;
-        /**
+    /**
      * How many bytes per float.
      */
     protected final int mBytesPerFloat = 4;
@@ -41,15 +42,17 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      * Size of the color data in elements.
      */
     protected final int mColorDataSize = 4;
+
     enum SceneType {
 
-        MENU_SCENE, QUEST_SCENE, ANIMATION_BETWEEN_SCENES
+        MENU_SCENE, LEVEL_SCENE, QUEST_SCENE, ANIMATION_BETWEEN_SCENES
     }
     MenuScene mMenuScene;
+    LevelScene mLevelScene;
+    Scene curr_scene;
     private float colors[] = new float[4];//JUST FOR TESTING MOUS EVENT.
-    
     protected float mScreenSize = 10.f;
-    protected float mRatio  = 1.f;
+    protected float mRatio = 1.f;
     private SceneType mSceneType = SceneType.MENU_SCENE;
     /**
      * Store the model matrix. This matrix is used to move models from object
@@ -86,6 +89,7 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      */
     protected int mColorHandle;
     protected int programHandle;
+
     /**
      * Initialize the model data.
      */
@@ -95,6 +99,9 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     private GLRenderer() {
 
         mMenuScene = new MenuScene(this);
+        mLevelScene = new LevelScene(this);
+
+        curr_scene = mMenuScene;
     }
 
     @Override
@@ -106,7 +113,7 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
         final float eyeZ = mScreenSize;
-        
+
 
         // We are looking toward the distance
         final float lookX = 0.0f;
@@ -200,7 +207,7 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         }
 
         // Create a program object and store the handle to it.
-         programHandle = GLES20.glCreateProgram();
+        programHandle = GLES20.glCreateProgram();
 
         if (programHandle != 0) {
             // Bind the vertex shader to the program.
@@ -241,35 +248,18 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
     }
 
-    public void onTouchDown(float aX, float aY)
-    {
-        switch(mSceneType)
-        {
-            case MENU_SCENE:
-                mMenuScene.onTouchDown(aX, aY);
-                break;
-        }
+    public void onTouchDown(float aX, float aY) {
+        curr_scene.onTouchDown(aX, aY);
     }
-    public void onTouchMove(float aX, float aY)
-    {
-                switch(mSceneType)
-        {
-            case MENU_SCENE:
-                mMenuScene.onTouchMove(aX, aY);
-                break;
-        }
+
+    public void onTouchMove(float aX, float aY) {
+        curr_scene.onTouchMove(aX, aY);
     }
-    public void onTouchUp(float aX, float aY)
-    {
-                switch(mSceneType)
-        {
-            case MENU_SCENE:
-                mMenuScene.onTouchUp(aX, aY);
-                break;
-        }
+
+    public void onTouchUp(float aX, float aY) {
+        curr_scene.onTouchUp(aX, aY);
     }
-    
-    
+
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
@@ -285,8 +275,8 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         final float far = 10.0f;
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
-        
-        mMenuScene.onResize(this);
+
+        curr_scene.onResize(this);
     }
 
     @Override
@@ -294,34 +284,45 @@ public enum  GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-       // GLES20.glClearColor(mred, mgreen, mblue, 0.5f);
-        if (mSceneType == SceneType.MENU_SCENE) {
+        // GLES20.glClearColor(mred, mgreen, mblue, 0.5f);
             // Do a complete rotation every 10 seconds.
             long time = SystemClock.uptimeMillis() % 10000L;
 
             // Draw the triangle facing straight on.
             Matrix.setIdentityM(mModelMatrix, 0);
-            mMenuScene.draw(this);
-        }
+            curr_scene.draw(this);
+        
     }
+
     public void setColorBackground(float _mred, float _mgreen, float _mblue) {
         colors[0] = _mred;
         colors[1] = _mgreen;
         colors[2] = _mblue;
         colors[3] = 1.0f;
-        
+
         ByteBuffer b1 = ByteBuffer.allocateDirect(16);
         b1.order(ByteOrder.nativeOrder());
         FloatBuffer vertexBuffer = b1.asFloatBuffer();
         vertexBuffer.position(0);
         vertexBuffer.put(colors);
         vertexBuffer.position(0);
-        
+
         //WTF???? Why it is not working?
         GLES20.glEnableVertexAttribArray(mColorHandle);
         GLES20.glVertexAttribPointer(mColorHandle, 4, GLES20.GL_FLOAT, false, 0, vertexBuffer);
         GLES20.glDisableVertexAttribArray(mColorHandle);
         onDrawFrame(null);
     }
-    
+
+    public void changeSceneType(SceneType _type) {
+        mSceneType = _type;
+        switch (mSceneType) {
+            case MENU_SCENE:
+                curr_scene = mMenuScene;
+                break;
+            case LEVEL_SCENE:
+                curr_scene = mLevelScene;
+                break;
+        }
+    }
 }

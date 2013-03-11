@@ -21,4 +21,6 @@ public abstract class Scene {
     public abstract void onTouchUp(float aX, float aY);
     public abstract void onClick(Button aButton);
     
+    public abstract void onResize(GLRenderer aRenderer);
+    
 }

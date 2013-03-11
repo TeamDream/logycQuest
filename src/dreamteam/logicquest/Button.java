@@ -23,7 +23,6 @@ public class Button extends QuadImage {
     public void onTouchDown(Scene aScene, float aX, float aY) {
         if (mouseOnClick(aX, aY)) {
             scale(5.0f / 2, 2.5f / 2, 1.0f);
-
         }
     }
 
@@ -32,8 +31,11 @@ public class Button extends QuadImage {
 
     public void onTouchUp(Scene aScene, float aX, float aY) {
         scale(5.0f, 2.5f, 1.0f);
-
-        aScene.onClick(this);
+        
+        if (mouseOnClick(aX, aY)) {
+           aScene.onClick(this);
+        }
+        
     }
 
     public boolean mouseOnClick(float _x, float _y) {

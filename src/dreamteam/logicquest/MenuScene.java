@@ -73,6 +73,7 @@ public class MenuScene extends Scene {
 
     public void onClick(Button aButton) {
         if (aButton.mName.equals("StartGameButton")) {
+            GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.LEVEL_SCENE);
         }
     }
 }
