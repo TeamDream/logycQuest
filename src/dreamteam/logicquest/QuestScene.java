@@ -21,7 +21,7 @@ public class QuestScene extends Scene {
         mBackground = new QuadImage(aRenderer);
         mBackground.setTexture("some texture");
 
-        mSticker = new Sticker(aRenderer, 0.05f);
+        mSticker = new Sticker(aRenderer, 2.f / 3);
         mSticker.scale(5.0f, 5.f, 1.0f);
         mSticker.setName("StartGameButton");
     }

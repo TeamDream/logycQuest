@@ -10,6 +10,7 @@ import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Vector;
 
 /**
  *
@@ -17,6 +18,11 @@ import java.nio.FloatBuffer;
  */
 public class Sticker {
 
+    private class IndexBuffer {
+
+        public Vector<Integer> buffer = new Vector<Integer>();
+    }
+    private IndexBuffer[][] mControlPoints;
     public String mName;
     protected GLRenderer mRenderer;
     private final FloatBuffer mVertices;
@@ -28,31 +34,41 @@ public class Sticker {
     protected float mTranslateY = 0.0f;
     protected float mTranslateZ = 0.0f;
     private int mVertecesCount = 0;
-    
-    public Sticker(GLRenderer aRenderer , float aDetalization) {
+   private int mQuadsInRaw  =0 ;
+   private int mQuadsInCol  =0 ;
+
+    public Sticker(GLRenderer aRenderer, float aDetalization) {
         mRenderer = aRenderer;
 
         //float detalization = 0.5f;
-        int quadsInRaw = (int) (2.f / aDetalization);
-        int quadsInCol = (int) (2.f / aDetalization);
-        int numberOfQuads = quadsInRaw * quadsInCol;
+        mQuadsInRaw = (int) (2.f / aDetalization);
+        mQuadsInCol =  (int) (2.f / aDetalization);
+        int numberOfQuads = mQuadsInRaw * mQuadsInCol;
         int dataForVerticeSize = 7;// x,y,z,r,g,b,a
         int dataForQuadSize = 6 * dataForVerticeSize; //2 triangles - 6 vertices
         // This triangle is red, green, and blue.
         mVertecesCount = numberOfQuads * 6;
         final float[] VerticesData = new float[numberOfQuads * dataForQuadSize];
-        for (int i = 0; i < quadsInRaw; ++i) {
-            for (int j = 0; j < quadsInCol; ++j) {
 
-                int dataIndex = dataForQuadSize * (i * quadsInRaw + j);
+        mControlPoints = new IndexBuffer[mQuadsInRaw + 1][mQuadsInCol + 1];
+        
+        for (int i = 0; i < mQuadsInRaw + 1; ++i) {
+            for (int j = 0; j < mQuadsInRaw + 1; ++j) {
+                mControlPoints[i][j] = new IndexBuffer();
+            }
+         }
+        for (int i = 0; i < mQuadsInRaw; ++i) {
+            for (int j = 0; j < mQuadsInCol; ++j) {
+
+                int dataIndex = dataForQuadSize * (i * mQuadsInRaw + j);
                 //first triangle
                 // X, Y, Z, 
                 float leftBottomX = -1.f + aDetalization * i;
-                float leftBottomY = -1.f + aDetalization * j;
+                float leftBottomY = -1.f + aDetalization * (mQuadsInCol - j - 1);
                 VerticesData[dataIndex] = leftBottomX;
                 VerticesData[dataIndex + 1] = leftBottomY;
                 VerticesData[dataIndex + 2] = 0.0f;
-
+                mControlPoints[i][j + 1].buffer.add(new Integer(dataIndex));
                 // R, G, B, A            
                 VerticesData[dataIndex + 3] = 1.0f;
                 VerticesData[dataIndex + 4] = 0.0f;
@@ -63,7 +79,7 @@ public class Sticker {
                 VerticesData[dataIndex + 7] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 8] = leftBottomY;
                 VerticesData[dataIndex + 9] = 0.0f;
-
+                mControlPoints[i + 1][j +1].buffer.add(new Integer(dataIndex + 7));
                 // R, G, B, A            
                 VerticesData[dataIndex + 10] = 0.0f;
                 VerticesData[dataIndex + 11] = 0.0f;
@@ -74,6 +90,7 @@ public class Sticker {
                 VerticesData[dataIndex + 14] = leftBottomX;
                 VerticesData[dataIndex + 15] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 16] = 0.0f;
+                mControlPoints[i][j].buffer.add(new Integer(dataIndex + 14));
 
                 // R, G, B, A            
                 VerticesData[dataIndex + 17] = 0.0f;
@@ -88,6 +105,7 @@ public class Sticker {
                 VerticesData[dataIndex + 22] = leftBottomY;
                 VerticesData[dataIndex + 23] = 0.0f;
 
+                mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 21));
                 // R, G, B, A            
                 VerticesData[dataIndex + 24] = 0.0f;
                 VerticesData[dataIndex + 25] = 0.0f;
@@ -98,7 +116,7 @@ public class Sticker {
                 VerticesData[dataIndex + 28] = leftBottomX;
                 VerticesData[dataIndex + 29] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 30] = 0.0f;
-
+                mControlPoints[i][j].buffer.add(new Integer(dataIndex + 28));
                 // R, G, B, A            
                 VerticesData[dataIndex + 31] = 0.0f;
                 VerticesData[dataIndex + 32] = 1.0f;
@@ -109,7 +127,7 @@ public class Sticker {
                 VerticesData[dataIndex + 35] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 36] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 37] = 0.0f;
-
+                mControlPoints[i + 1][j].buffer.add(new Integer(dataIndex + 35));
                 // R, G, B, A            
                 VerticesData[dataIndex + 38] = 1.0f;
                 VerticesData[dataIndex + 39] = 0.0f;
@@ -143,7 +161,8 @@ public class Sticker {
         mTranslateZ = aTranslateZ;
     }
 
-    public void draw(GLRenderer aRenderer) {        // Pass in the position information
+    public void draw(GLRenderer aRenderer) {        
+       moveControlPoint(mQuadsInRaw -1, mQuadsInCol -1, -0.001f, 0.001f, 0.0f);
         mVertices.position(aRenderer.mPositionOffset);
         GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
                 aRenderer.mStrideBytes, mVertices);
@@ -172,6 +191,18 @@ public class Sticker {
         Matrix.multiplyMM(aRenderer.mMVPMatrix, 0, aRenderer.mProjectionMatrix, 0, aRenderer.mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(aRenderer.mMVPMatrixHandle, 1, false, aRenderer.mMVPMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,mVertecesCount);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mVertecesCount);
+    }
+
+    void moveControlPoint(int aIndexX, int aIndexY, float aDeltaX, float aDeltaY, float aDeltaZ) {
+        float currentPositionX = mVertices.get(mControlPoints[aIndexX][aIndexY].buffer.get(0));
+        float currentPositionY = mVertices.get(mControlPoints[aIndexX][aIndexY].buffer.get(0) + 1);
+        float currentPositionZ = mVertices.get(mControlPoints[aIndexX][aIndexY].buffer.get(0) + 2);
+
+        for (Integer index : mControlPoints[aIndexX][aIndexY].buffer) {
+            mVertices.put(index, currentPositionX + aDeltaX);
+            mVertices.put(index + 1, currentPositionY + aDeltaY);
+            mVertices.put(index + 2, currentPositionZ + aDeltaZ);
+        }
     }
 }

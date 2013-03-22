@@ -247,7 +247,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(programHandle);
 
-
+        //GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
 
     public void onTouchDown(float aX, float aY) {
