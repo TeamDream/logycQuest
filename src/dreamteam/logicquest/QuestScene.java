@@ -21,7 +21,7 @@ public class QuestScene extends Scene {
         mBackground = new QuadImage(aRenderer);
         mBackground.setTexture("some texture");
 
-        mSticker = new Sticker(aRenderer, 2.f / 3);
+        mSticker = new Sticker(aRenderer, 2.f / 30);
         mSticker.scale(5.0f, 5.f, 1.0f);
         mSticker.setName("StartGameButton");
     }
@@ -39,6 +39,7 @@ public class QuestScene extends Scene {
     }
 
     public void onTouchDown(float aX, float aY) {
+        mSticker.startAnimation();
     }
 
     public void onTouchMove(float aX, float aY) {

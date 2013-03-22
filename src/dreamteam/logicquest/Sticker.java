@@ -34,15 +34,17 @@ public class Sticker {
     protected float mTranslateY = 0.0f;
     protected float mTranslateZ = 0.0f;
     private int mVertecesCount = 0;
-   private int mQuadsInRaw  =0 ;
-   private int mQuadsInCol  =0 ;
+    private int mQuadsInRaw = 0;
+    private int mQuadsInCol = 0;
+    private float mTime = 10;
+    private float mDetalization = 0.f;
 
     public Sticker(GLRenderer aRenderer, float aDetalization) {
         mRenderer = aRenderer;
-
+        mDetalization = aDetalization;
         //float detalization = 0.5f;
         mQuadsInRaw = (int) (2.f / aDetalization);
-        mQuadsInCol =  (int) (2.f / aDetalization);
+        mQuadsInCol = (int) (2.f / aDetalization);
         int numberOfQuads = mQuadsInRaw * mQuadsInCol;
         int dataForVerticeSize = 7;// x,y,z,r,g,b,a
         int dataForQuadSize = 6 * dataForVerticeSize; //2 triangles - 6 vertices
@@ -51,12 +53,12 @@ public class Sticker {
         final float[] VerticesData = new float[numberOfQuads * dataForQuadSize];
 
         mControlPoints = new IndexBuffer[mQuadsInRaw + 1][mQuadsInCol + 1];
-        
+
         for (int i = 0; i < mQuadsInRaw + 1; ++i) {
             for (int j = 0; j < mQuadsInRaw + 1; ++j) {
                 mControlPoints[i][j] = new IndexBuffer();
             }
-         }
+        }
         for (int i = 0; i < mQuadsInRaw; ++i) {
             for (int j = 0; j < mQuadsInCol; ++j) {
 
@@ -79,7 +81,7 @@ public class Sticker {
                 VerticesData[dataIndex + 7] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 8] = leftBottomY;
                 VerticesData[dataIndex + 9] = 0.0f;
-                mControlPoints[i + 1][j +1].buffer.add(new Integer(dataIndex + 7));
+                mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 7));
                 // R, G, B, A            
                 VerticesData[dataIndex + 10] = 0.0f;
                 VerticesData[dataIndex + 11] = 0.0f;
@@ -161,8 +163,11 @@ public class Sticker {
         mTranslateZ = aTranslateZ;
     }
 
-    public void draw(GLRenderer aRenderer) {        
-       moveControlPoint(mQuadsInRaw -1, mQuadsInCol -1, -0.001f, 0.001f, 0.0f);
+    public void draw(GLRenderer aRenderer) {
+
+                float deltaTime = .0005f;
+        update(deltaTime);
+        //moveControlPoint(mQuadsInRaw - 1, mQuadsInCol - 1, -0.001f, 0.001f, 0.f);
         mVertices.position(aRenderer.mPositionOffset);
         GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
                 aRenderer.mStrideBytes, mVertices);
@@ -203,6 +208,45 @@ public class Sticker {
             mVertices.put(index, currentPositionX + aDeltaX);
             mVertices.put(index + 1, currentPositionY + aDeltaY);
             mVertices.put(index + 2, currentPositionZ + aDeltaZ);
+        }
+    }
+
+    public void setControlPointPosition(int aIndexX, int aIndexY, float aX, float aY, float aZ) {
+
+        for (Integer index : mControlPoints[aIndexX][aIndexY].buffer) {
+            mVertices.put(index, aX);
+            mVertices.put(index + 1, aY);
+            mVertices.put(index + 2, aZ);
+        }
+    }
+
+    public void startAnimation()
+    {
+        mTime  = 0.f;
+    }
+    public void update(float aDeltaTime) {
+        float t = (0.3f - mTime);
+        if(t < 0.12f)
+        {
+            return;
+        }
+        float A = -15 *t;
+        float h = 3.14f / 1.2f * t;
+        mTime += aDeltaTime;
+        for (int i = 0; i < mQuadsInRaw + 1; ++i) {
+            for (int j = 0; j < mQuadsInCol + 1; ++j) {
+                float pX = -1.f + mDetalization * i;
+                float pY = -1.f + mDetalization * (mQuadsInCol - j);
+                float pZ = 0.0f;
+                float R = (float) Math.sqrt((pX + 1) * (pX + 1) + (pY - A) * (pY - A));
+                float d = R * (float) Math.sin(h);
+                float alpha = (float) Math.asin((pX + 1) / R);
+                float beta = alpha / (float) Math.sin(h);
+                float x = d * (float) Math.sin(beta);
+                float y = R + A - d * (1 - (float) Math.cos(beta) * (float) Math.sin(h));
+                float z = d * (1 - (float) Math.cos(beta)) * (float) Math.cos(h);
+                setControlPointPosition(i, j, x - 1, y +  1 / GLRenderer.INSTANSE.mRatio, z + 0.5f);
+            }
         }
     }
 }
