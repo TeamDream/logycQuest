@@ -165,7 +165,7 @@ public class Sticker {
 
     public void draw(GLRenderer aRenderer) {
 
-                float deltaTime = .0005f;
+                float deltaTime = .01f;
         update(deltaTime);
         //moveControlPoint(mQuadsInRaw - 1, mQuadsInCol - 1, -0.001f, 0.001f, 0.f);
         mVertices.position(aRenderer.mPositionOffset);
@@ -225,27 +225,27 @@ public class Sticker {
         mTime  = 0.f;
     }
     public void update(float aDeltaTime) {
-        float t = (0.31f - mTime);
-        if(t < 0.10f)
+        float t = (0.8f - mTime);
+        if(t < 0.20f)
         {
             return;
         }
-        float A = -15 *t;
-        float h = 3.14f / 1.2f * t;
+        float A = -5 *t;
+        float h = 3.14f / 2.0f * t;
         mTime += aDeltaTime;
         for (int i = 0; i < mQuadsInRaw + 1; ++i) {
             for (int j = 0; j < mQuadsInCol + 1; ++j) {
-                float pX = -1.f + mDetalization * i;
+                float pX = (-1.f + mDetalization * i);
                 float pY = -1.f + mDetalization * (mQuadsInCol - j);
                 float pZ = 0.0f;
-                float R = (float) Math.sqrt((pX + 1.) * (pX + 1.) + (pY - A) * (pY - A));
+                float R = (float) Math.sqrt((pX + 1.6) * (pX + 1.6) + (pY - A) * (pY - A));
                 float d = R * (float) Math.sin(h);
-                float alpha = (float) Math.asin((pX + 1) / R);
+                float alpha = (float) Math.asin((pX + 1.6) / (R));
                 float beta = alpha / (float) Math.sin(h);
                 float x = d * (float) Math.sin(beta);
                 float y = (R + A) - d * (1 - (float) Math.cos(beta)) * (float) Math.sin(h);
                 float z = d * (1 - (float) Math.cos(beta)) * (float) Math.cos(h);
-                setControlPointPosition(i, j, x - 1, y , z);
+                setControlPointPosition(i, j, x - 1.6f, y , z);
             }
         }
     }
