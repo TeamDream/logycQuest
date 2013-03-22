@@ -11,7 +11,7 @@ package dreamteam.logicquest;
 public class Button extends QuadImage {
 
     public String mName;
-
+    private boolean mTouchDown = false;
     public void setName(String aName) {
         mName = aName;
     }
@@ -23,6 +23,7 @@ public class Button extends QuadImage {
     public void onTouchDown(Scene aScene, float aX, float aY) {
         if (mouseOnClick(aX, aY)) {
             scale(5.0f / 2, 2.5f / 2, 1.0f);
+            mTouchDown = true;
         }
     }
 
@@ -32,10 +33,10 @@ public class Button extends QuadImage {
     public void onTouchUp(Scene aScene, float aX, float aY) {
         scale(5.0f, 2.5f, 1.0f);
         
-        if (mouseOnClick(aX, aY)) {
+        if (mTouchDown && mouseOnClick(aX, aY)) {
            aScene.onClick(this);
         }
-        
+        mTouchDown = false;
     }
 
     public boolean mouseOnClick(float _x, float _y) {

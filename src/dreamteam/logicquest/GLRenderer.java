@@ -49,6 +49,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     }
     MenuScene mMenuScene;
     LevelScene mLevelScene;
+    QuestScene mQuestScene;
     Scene curr_scene;
     private float colors[] = new float[4];//JUST FOR TESTING MOUS EVENT.
     protected float mScreenSize = 10.f;
@@ -100,6 +101,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
         mMenuScene = new MenuScene(this);
         mLevelScene = new LevelScene(this);
+        mQuestScene = new QuestScene(this);
 
         curr_scene = mMenuScene;
     }
@@ -276,7 +278,11 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
 
-        curr_scene.onResize(this);
+        //curr_scene.onResize(this);
+
+        mMenuScene.onResize(this);
+        mLevelScene.onResize(this);
+        mQuestScene.onResize(this);
     }
 
     @Override
@@ -285,13 +291,13 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         // GLES20.glClearColor(mred, mgreen, mblue, 0.5f);
-            // Do a complete rotation every 10 seconds.
-            long time = SystemClock.uptimeMillis() % 10000L;
+        // Do a complete rotation every 10 seconds.
+        long time = SystemClock.uptimeMillis() % 10000L;
 
-            // Draw the triangle facing straight on.
-            Matrix.setIdentityM(mModelMatrix, 0);
-            curr_scene.draw(this);
-        
+        // Draw the triangle facing straight on.
+        Matrix.setIdentityM(mModelMatrix, 0);
+        curr_scene.draw(this);
+
     }
 
     public void setColorBackground(float _mred, float _mgreen, float _mblue) {
@@ -322,6 +328,9 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
                 break;
             case LEVEL_SCENE:
                 curr_scene = mLevelScene;
+                break;
+            case QUEST_SCENE:
+                curr_scene = mQuestScene;
                 break;
         }
     }
