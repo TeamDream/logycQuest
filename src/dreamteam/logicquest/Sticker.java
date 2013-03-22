@@ -225,8 +225,8 @@ public class Sticker {
         mTime  = 0.f;
     }
     public void update(float aDeltaTime) {
-        float t = (0.3f - mTime);
-        if(t < 0.12f)
+        float t = (0.31f - mTime);
+        if(t < 0.10f)
         {
             return;
         }
@@ -238,14 +238,14 @@ public class Sticker {
                 float pX = -1.f + mDetalization * i;
                 float pY = -1.f + mDetalization * (mQuadsInCol - j);
                 float pZ = 0.0f;
-                float R = (float) Math.sqrt((pX + 1) * (pX + 1) + (pY - A) * (pY - A));
+                float R = (float) Math.sqrt((pX + 1.) * (pX + 1.) + (pY - A) * (pY - A));
                 float d = R * (float) Math.sin(h);
                 float alpha = (float) Math.asin((pX + 1) / R);
                 float beta = alpha / (float) Math.sin(h);
                 float x = d * (float) Math.sin(beta);
-                float y = R + A - d * (1 - (float) Math.cos(beta) * (float) Math.sin(h));
+                float y = (R + A) - d * (1 - (float) Math.cos(beta)) * (float) Math.sin(h);
                 float z = d * (1 - (float) Math.cos(beta)) * (float) Math.cos(h);
-                setControlPointPosition(i, j, x - 1, y +  1 / GLRenderer.INSTANSE.mRatio, z + 0.5f);
+                setControlPointPosition(i, j, x - 1, y , z);
             }
         }
     }
