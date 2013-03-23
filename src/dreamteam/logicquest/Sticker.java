@@ -10,7 +10,7 @@ import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,7 +20,7 @@ public class Sticker {
 
     private class IndexBuffer {
 
-        public Vector<Integer> buffer = new Vector<Integer>();
+        public ArrayList<Integer> buffer = new ArrayList<Integer>();
     }
     private IndexBuffer[][] mControlPoints;
     public String mName;
@@ -164,8 +164,7 @@ public class Sticker {
     }
 
     public void draw(GLRenderer aRenderer) {
-
-                float deltaTime = .01f;
+        float deltaTime = mAnimationDirection * 0.01f;
         update(deltaTime);
         //moveControlPoint(mQuadsInRaw - 1, mQuadsInCol - 1, -0.001f, 0.001f, 0.f);
         mVertices.position(aRenderer.mPositionOffset);
@@ -220,17 +219,18 @@ public class Sticker {
         }
     }
 
-    public void startAnimation()
-    {
-        mTime  = 0.f;
+    public void startAnimation() {
+        mTime = 0.f;
     }
+
     public void update(float aDeltaTime) {
         float t = (0.8f - mTime);
-        if(t < 0.20f)
-        {
+        if (t <= 0.20f || t >= 0.8f) {
+            mAnimation = false;
+            mAnimationDirection = 0;
             return;
         }
-        float A = -5 *t;
+        float A = -5 * t;
         float h = 3.14f / 2.0f * t;
         mTime += aDeltaTime;
         for (int i = 0; i < mQuadsInRaw + 1; ++i) {
@@ -245,8 +245,57 @@ public class Sticker {
                 float x = d * (float) Math.sin(beta);
                 float y = (R + A) - d * (1 - (float) Math.cos(beta)) * (float) Math.sin(h);
                 float z = d * (1 - (float) Math.cos(beta)) * (float) Math.cos(h);
-                setControlPointPosition(i, j, x - 1.6f, y , z);
+                setControlPointPosition(i, j, x - 1.6f, y, z);
             }
         }
+        MainActivity.singleton.mGLView.requestRender();
     }
+    boolean mTouch = false;
+    float mPrevTouchX = 0.f;
+    float mPrevTouchY = 0.f;
+    boolean mAnimation = false;
+    int mAnimationDirection = 0;
+    State mState = State.OPENED;
+    public void onTouchDown(float aX, float aY) {
+        if (mTouch || mAnimation) {
+            return;
+
+        }
+        if (( mState == State.OPENED && aX > 0.65f && aY > 0.75f)
+                || (mState == State.CLOSED && aX < 0.35f && aY < 0.25f)) {
+            mPrevTouchX = aX;
+            mPrevTouchY = aY;
+            mTouch = true;
+        }
+    }
+
+    public void onTouchMove(float aX, float aY) {
+        if (!mTouch || mAnimation) {
+            return;
+        }
+        float deltaX = mPrevTouchX - aX;
+        float deltaY = mPrevTouchY - aY;
+        float move = 0.5f * deltaX + 0.5f * deltaY;
+        mTime = move / 5.f * 6.f;
+        if(mState == State.CLOSED )
+        {
+            mTime = 0.6f + mTime;
+        }
+
+    }
+
+    public void onTouchUp(float aX, float aY) {
+        if (!mTouch || mAnimation) {
+            return;
+        }
+        mTouch = false;
+        mAnimation = true;
+        mAnimationDirection = (mTime > 0.4f) ? 1 : -1;
+        mState = (mTime > 0.4f) ? State.CLOSED: State.OPENED;
+
+    }
+    enum State{
+        OPENED, 
+        CLOSED
+    };
 }
