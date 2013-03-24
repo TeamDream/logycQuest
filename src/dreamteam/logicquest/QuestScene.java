@@ -19,7 +19,7 @@ public class QuestScene extends Scene {
     public QuestScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
-        mBackground.setTexture("some texture");
+        mBackground.setTexture(aRenderer.mTextureDataHandle);
 
         mSticker = new Sticker(aRenderer, 2.f / 30);
         mSticker.scale(6.0f, 9.f, 1.0f);

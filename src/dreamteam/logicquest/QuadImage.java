@@ -14,11 +14,11 @@ import java.nio.FloatBuffer;
  *
  * @author Дима
  */
-
 public class QuadImage {
 
     protected GLRenderer mRenderer;
     private final FloatBuffer mVertices;
+    private final FloatBuffer mTextureCoordinates;
     public float[] mModelMatrix = new float[16];
     protected float mScaleParameterX = 1.0f;
     protected float mScaleParameterY = 1.0f;
@@ -26,6 +26,11 @@ public class QuadImage {
     protected float mTranslateX = 0.0f;
     protected float mTranslateY = 0.0f;
     protected float mTranslateZ = 0.0f;
+    /**
+     * This is a handle to our texture data.
+     */
+    private int mTextureDataHandle;
+
     public QuadImage(GLRenderer aRenderer) {
         mRenderer = aRenderer;
         // This triangle is red, green, and blue.
@@ -33,29 +38,43 @@ public class QuadImage {
             // X, Y, Z, 
             // R, G, B, A
             -1.0f, -1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
             -1.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
             1.0f, -1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
             -1.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.0f,
             1.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 1.0f};
+            1.0f, 1.0f, 1.0f, 0.0f};
+
+        final float[] textureCoordinateData = {
+            // Front face
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f};
         // Initialize the buffers.
         mVertices = ByteBuffer.allocateDirect(VerticesData.length * aRenderer.mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         mVertices.put(VerticesData).position(0);
+
+        mTextureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * aRenderer.mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mTextureCoordinates.put(textureCoordinateData).position(0);
     }
-    public void setTexture(String aTexture)
-    {
-        
+
+    public void setTexture(int TextureID) {
+
+        mTextureDataHandle = TextureID;//TextureHelper.loadTexture(MainActivity.singleton, TextureID);
     }
-    
-    public void scale(float aScaleParameterX,float aScaleParameterY, float aScaleParameterZ) {
+
+    public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
         mScaleParameterX = aScaleParameterX;
         mScaleParameterY = aScaleParameterY;
         mScaleParameterZ = aScaleParameterZ;
@@ -68,6 +87,14 @@ public class QuadImage {
     }
 
     public void draw(GLRenderer aRenderer) {        // Pass in the position information
+
+
+        // Set the active texture unit to texture unit 0.
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        GLES20.glUniform1i(aRenderer.mTextureUniformHandle, 0);
         mVertices.position(aRenderer.mPositionOffset);
         GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
                 aRenderer.mStrideBytes, mVertices);
@@ -80,6 +107,12 @@ public class QuadImage {
                 aRenderer.mStrideBytes, mVertices);
 
         GLES20.glEnableVertexAttribArray(aRenderer.mColorHandle);
+        // Pass in the texture coordinate information
+        mTextureCoordinates.position(0);
+        GLES20.glVertexAttribPointer(aRenderer.mTextureCoordinateHandle, aRenderer.mTextureCoordinateDataSize, GLES20.GL_FLOAT, false,
+                0, mTextureCoordinates);
+
+        GLES20.glEnableVertexAttribArray(aRenderer.mTextureCoordinateHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).

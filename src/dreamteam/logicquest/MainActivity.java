@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGLView = new GLView(this);
+        
 // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -33,6 +34,7 @@ public class MainActivity extends Activity {
             mGLView.setEGLContextClientVersion(2);
             // Set the renderer to our demo renderer, defined below.
             mGLView.setRenderer(GLRenderer.INSTANSE);
+            //GLRenderer.INSTANCE.setContext(this);
             setContentView(mGLView);
             //  mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         } else {

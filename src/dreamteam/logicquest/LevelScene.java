@@ -25,12 +25,13 @@ public class LevelScene extends Scene {
             mStickerButtons[i].translate(shift_x, shift_y, 0.f);
             mStickerButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
             mStickerButtons[i].setName(Integer.toString(i));
+            mStickerButtons[i].setTexture(aRenderer.mTextureDataHandle1);
         }
 
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
         mBackground.scale(scale_val, scale_val, 1.0f);
-        mBackground.setTexture("some texture");
+        mBackground.setTexture(aRenderer.mTextureDataHandle);
     }
 
     @Override
