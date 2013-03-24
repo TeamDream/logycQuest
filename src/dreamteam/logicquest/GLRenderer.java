@@ -160,13 +160,15 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
         // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(mProgramHandle);
-
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
         // Load the texture
 
         mTextureDataHandle = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.images);
         mTextureDataHandle1 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
-        
-        
+        mTextureDataHandle2 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.sticker_mirrow);
+
+
         mMenuScene = new MenuScene(this);
         mLevelScene = new LevelScene(this);
         mQuestScene = new QuestScene(this);
@@ -249,19 +251,20 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      */
     protected int mTextureDataHandle;
     protected int mTextureDataHandle1;
+    protected int mTextureDataHandle2;
 
     @Override
     public void onDrawFrame(GL10 glUnused) {
 
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-/*       // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        /*       // Set the active texture unit to texture unit 0.
+         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+         // Bind the texture to this unit.
+         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
 
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);*/
+         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+         GLES20.glUniform1i(mTextureUniformHandle, 0);*/
         // GLES20.glClearColor(mred, mgreen, mblue, 0.5f);
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;

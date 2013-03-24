@@ -24,6 +24,7 @@ public class QuestScene extends Scene {
         mSticker = new Sticker(aRenderer, 2.f / 30);
         mSticker.scale(6.0f, 9.f, 1.0f);
         mSticker.setName("StartGameButton");
+        mSticker.setTexture(aRenderer.mTextureDataHandle2);
     }
 
     public void onResize(GLRenderer aRenderer) {

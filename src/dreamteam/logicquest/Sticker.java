@@ -36,8 +36,13 @@ public class Sticker {
     private int mVertecesCount = 0;
     private int mQuadsInRaw = 0;
     private int mQuadsInCol = 0;
-    private float mTime = 10;
+    private float mTime = 0.f;
     private float mDetalization = 0.f;
+    private final FloatBuffer mTextureCoordinates;
+    /**
+     * This is a handle to our texture data.
+     */
+    private int mTextureDataHandle;
 
     public Sticker(GLRenderer aRenderer, float aDetalization) {
         mRenderer = aRenderer;
@@ -48,9 +53,11 @@ public class Sticker {
         int numberOfQuads = mQuadsInRaw * mQuadsInCol;
         int dataForVerticeSize = 7;// x,y,z,r,g,b,a
         int dataForQuadSize = 6 * dataForVerticeSize; //2 triangles - 6 vertices
+        int dataForQuadTextureSize = 12; //2 coords - 1 point (6 points)
         // This triangle is red, green, and blue.
         mVertecesCount = numberOfQuads * 6;
         final float[] VerticesData = new float[numberOfQuads * dataForQuadSize];
+        final float[] textureCoordinateData = new float[numberOfQuads * dataForQuadTextureSize];
 
         mControlPoints = new IndexBuffer[mQuadsInRaw + 1][mQuadsInCol + 1];
 
@@ -63,28 +70,34 @@ public class Sticker {
             for (int j = 0; j < mQuadsInCol; ++j) {
 
                 int dataIndex = dataForQuadSize * (i * mQuadsInRaw + j);
+                int textureIndex = dataForQuadTextureSize * (i * mQuadsInRaw + j);
                 //first triangle
                 // X, Y, Z, 
                 float leftBottomX = -1.f + aDetalization * i;
                 float leftBottomY = -1.f + aDetalization * (mQuadsInCol - j - 1);
+
                 VerticesData[dataIndex] = leftBottomX;
                 VerticesData[dataIndex + 1] = leftBottomY;
                 VerticesData[dataIndex + 2] = 0.0f;
+                textureCoordinateData[textureIndex] = 1.f - aDetalization * i / 2.f;
+                textureCoordinateData[textureIndex + 1] = 1.f - aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i][j + 1].buffer.add(new Integer(dataIndex));
                 // R, G, B, A            
                 VerticesData[dataIndex + 3] = 1.0f;
-                VerticesData[dataIndex + 4] = 0.0f;
-                VerticesData[dataIndex + 5] = 0.0f;
+                VerticesData[dataIndex + 4] = 1.0f;
+                VerticesData[dataIndex + 5] = 1.0f;
                 VerticesData[dataIndex + 6] = 1.0f;
 
                 // X, Y, Z, 
                 VerticesData[dataIndex + 7] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 8] = leftBottomY;
                 VerticesData[dataIndex + 9] = 0.0f;
+                textureCoordinateData[textureIndex + 2] = 1.f - aDetalization * (i+1) / 2.f;
+                textureCoordinateData[textureIndex + 3] = 1.f - aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 7));
                 // R, G, B, A            
-                VerticesData[dataIndex + 10] = 0.0f;
-                VerticesData[dataIndex + 11] = 0.0f;
+                VerticesData[dataIndex + 10] = 1.0f;
+                VerticesData[dataIndex + 11] = 1.0f;
                 VerticesData[dataIndex + 12] = 1.0f;
                 VerticesData[dataIndex + 13] = 1.0f;
 
@@ -92,12 +105,14 @@ public class Sticker {
                 VerticesData[dataIndex + 14] = leftBottomX;
                 VerticesData[dataIndex + 15] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 16] = 0.0f;
+                textureCoordinateData[textureIndex + 4] = 1- aDetalization * i / 2.f;
+                textureCoordinateData[textureIndex + 5] = 1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i][j].buffer.add(new Integer(dataIndex + 14));
 
                 // R, G, B, A            
-                VerticesData[dataIndex + 17] = 0.0f;
+                VerticesData[dataIndex + 17] = 1.0f;
                 VerticesData[dataIndex + 18] = 1.0f;
-                VerticesData[dataIndex + 19] = 0.0f;
+                VerticesData[dataIndex + 19] = 1.0f;
                 VerticesData[dataIndex + 20] = 1.0f;
 
                 //second triangle  
@@ -105,12 +120,14 @@ public class Sticker {
                 // X, Y, Z, 
                 VerticesData[dataIndex + 21] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 22] = leftBottomY;
-                VerticesData[dataIndex + 23] = 0.0f;
+                VerticesData[dataIndex + 23] = 1.0f;
 
+                textureCoordinateData[textureIndex + 6] = 1 - aDetalization * (i+1) / 2.f;
+                textureCoordinateData[textureIndex + 7] = 1.f- aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 21));
                 // R, G, B, A            
-                VerticesData[dataIndex + 24] = 0.0f;
-                VerticesData[dataIndex + 25] = 0.0f;
+                VerticesData[dataIndex + 24] = 1.0f;
+                VerticesData[dataIndex + 25] = 1.0f;
                 VerticesData[dataIndex + 26] = 1.0f;
                 VerticesData[dataIndex + 27] = 1.0f;
 
@@ -118,22 +135,26 @@ public class Sticker {
                 VerticesData[dataIndex + 28] = leftBottomX;
                 VerticesData[dataIndex + 29] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 30] = 0.0f;
+                textureCoordinateData[textureIndex + 8] = 1 - aDetalization * i / 2.f;
+                textureCoordinateData[textureIndex + 9] =  1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i][j].buffer.add(new Integer(dataIndex + 28));
                 // R, G, B, A            
-                VerticesData[dataIndex + 31] = 0.0f;
+                VerticesData[dataIndex + 31] = 1.0f;
                 VerticesData[dataIndex + 32] = 1.0f;
-                VerticesData[dataIndex + 33] = 0.0f;
+                VerticesData[dataIndex + 33] = 1.0f;
                 VerticesData[dataIndex + 34] = 1.0f;
 
                 // X, Y, Z, 
                 VerticesData[dataIndex + 35] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 36] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 37] = 0.0f;
+                textureCoordinateData[textureIndex + 10] = 1 - aDetalization * (i+1) / 2.f;
+                textureCoordinateData[textureIndex + 11] =  1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i + 1][j].buffer.add(new Integer(dataIndex + 35));
                 // R, G, B, A            
                 VerticesData[dataIndex + 38] = 1.0f;
-                VerticesData[dataIndex + 39] = 0.0f;
-                VerticesData[dataIndex + 40] = 0.0f;
+                VerticesData[dataIndex + 39] = 1.0f;
+                VerticesData[dataIndex + 40] = 1.0f;
                 VerticesData[dataIndex + 41] = 1.0f;
             }
         }
@@ -142,13 +163,20 @@ public class Sticker {
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         mVertices.put(VerticesData).position(0);
+        mTextureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * aRenderer.mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mTextureCoordinates.put(textureCoordinateData).position(0);
+        update(0.f);
+        mTime = 10.f;
     }
 
     public void setName(String aName) {
         mName = aName;
     }
 
-    public void setTexture(String aTexture) {
+    public void setTexture(int TextureID) {
+
+        mTextureDataHandle = TextureID;
     }
 
     public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
@@ -166,6 +194,10 @@ public class Sticker {
     public void draw(GLRenderer aRenderer) {
         float deltaTime = mAnimationDirection * 0.01f;
         update(deltaTime);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        GLES20.glUniform1i(aRenderer.mTextureUniformHandle, 0);
         //moveControlPoint(mQuadsInRaw - 1, mQuadsInCol - 1, -0.001f, 0.001f, 0.f);
         mVertices.position(aRenderer.mPositionOffset);
         GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
@@ -179,7 +211,11 @@ public class Sticker {
                 aRenderer.mStrideBytes, mVertices);
 
         GLES20.glEnableVertexAttribArray(aRenderer.mColorHandle);
+        mTextureCoordinates.position(0);
+        GLES20.glVertexAttribPointer(aRenderer.mTextureCoordinateHandle, aRenderer.mTextureCoordinateDataSize, GLES20.GL_FLOAT, false,
+                0, mTextureCoordinates);
 
+        GLES20.glEnableVertexAttribArray(aRenderer.mTextureCoordinateHandle);
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -256,12 +292,13 @@ public class Sticker {
     boolean mAnimation = false;
     int mAnimationDirection = 0;
     State mState = State.OPENED;
+
     public void onTouchDown(float aX, float aY) {
         if (mTouch || mAnimation) {
             return;
 
         }
-        if (( mState == State.OPENED && aX > 0.65f && aY > 0.75f)
+        if ((mState == State.OPENED && aX > 0.65f && aY > 0.75f)
                 || (mState == State.CLOSED && aX < 0.35f && aY < 0.25f)) {
             mPrevTouchX = aX;
             mPrevTouchY = aY;
@@ -277,8 +314,7 @@ public class Sticker {
         float deltaY = mPrevTouchY - aY;
         float move = 0.5f * deltaX + 0.5f * deltaY;
         mTime = move / 5.f * 6.f;
-        if(mState == State.CLOSED )
-        {
+        if (mState == State.CLOSED) {
             mTime = 0.6f + mTime;
         }
 
@@ -291,11 +327,13 @@ public class Sticker {
         mTouch = false;
         mAnimation = true;
         mAnimationDirection = (mTime > 0.4f) ? 1 : -1;
-        mState = (mTime > 0.4f) ? State.CLOSED: State.OPENED;
+        mState = (mTime > 0.4f) ? State.CLOSED : State.OPENED;
 
     }
-    enum State{
-        OPENED, 
+
+    enum State {
+
+        OPENED,
         CLOSED
     };
 }
