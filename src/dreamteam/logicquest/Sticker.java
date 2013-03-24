@@ -120,7 +120,7 @@ public class Sticker {
                 // X, Y, Z, 
                 VerticesData[dataIndex + 21] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 22] = leftBottomY;
-                VerticesData[dataIndex + 23] = 1.0f;
+                VerticesData[dataIndex + 23] = 0.0f;
 
                 textureCoordinateData[textureIndex + 6] = 1 - aDetalization * (i+1) / 2.f;
                 textureCoordinateData[textureIndex + 7] = 1.f- aDetalization * (mQuadsInCol - j - 1) / 2.f;
@@ -166,8 +166,6 @@ public class Sticker {
         mTextureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * aRenderer.mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mTextureCoordinates.put(textureCoordinateData).position(0);
-        update(0.f);
-        mTime = 10.f;
     }
 
     public void setName(String aName) {
