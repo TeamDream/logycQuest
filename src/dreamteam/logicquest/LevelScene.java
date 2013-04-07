@@ -14,7 +14,7 @@ public class LevelScene extends Scene {
     QuadImage mBackground;
 
     public LevelScene(GLRenderer aRenderer) {
-        float shift_x, shift_y, scale_val;
+        float shift_x, shift_y;
         scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
         for (int i = 0;
                 i < 9; ++i) {

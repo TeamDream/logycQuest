@@ -28,11 +28,12 @@ public class MenuScene extends Scene {
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
         mBackground.setTexture(aRenderer.mTextureDataHandle);
+        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
         for (int i = 0;
                 i < 3; ++i) {
             mButtons[i] = new Button(aRenderer);
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
-            mButtons[i].scale(5.0f, 2.5f, 1.0f);
+            mButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
             mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
         }
         mButtons[0].setName("StartGameButton");

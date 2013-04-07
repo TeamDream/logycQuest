@@ -22,7 +22,8 @@ public class Button extends QuadImage {
 
     public void onTouchDown(Scene aScene, float aX, float aY) {
         if (mouseOnClick(aX, aY)) {
-            scale(5.0f / 2, 2.5f / 2, 1.0f);
+           // scale(5.0f / 2, 2.5f / 2, 1.0f);
+            scale(0.16f * aScene.scale_val * 2, 0.16f * aScene.scale_val * 2, 1.0f);
             mTouchDown = true;
         }
     }
@@ -31,10 +32,11 @@ public class Button extends QuadImage {
     }
 
     public void onTouchUp(Scene aScene, float aX, float aY) {
-        scale(5.0f, 2.5f, 1.0f);
+        
         
         if (mTouchDown && mouseOnClick(aX, aY)) {
-           aScene.onClick(this);
+           scale(0.16f * aScene.scale_val, 0.16f * aScene.scale_val, 1.0f);
+           aScene.onClick(this);      
         }
         mTouchDown = false;
     }
