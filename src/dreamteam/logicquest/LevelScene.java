@@ -13,8 +13,10 @@ public class LevelScene extends Scene {
     Button[] mStickerButtons = new Button[9]; // at first abstraction level. Not sure if it should be some special class
     QuadImage mBackground;
     float curr_time;
-    boolean animate = false;
+    boolean animate_translation = false;
+    boolean animate_scale = false;
     float d_x, d_y;
+    float d_scale;
     int start_i;
 
     public LevelScene(GLRenderer aRenderer) {
@@ -27,9 +29,10 @@ public class LevelScene extends Scene {
             shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
             mStickerButtons[i] = new Button(aRenderer);
             mStickerButtons[i].translate(shift_x, shift_y, 0.f);
+            // mStickerButtons[i].scale(scale_val, scale_val, 1.0f);
             mStickerButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
             mStickerButtons[i].setName(Integer.toString(i));
-            mStickerButtons[i].setTexture(aRenderer.mTextureDataHandle1);
+            mStickerButtons[i].setTexture(aRenderer.mTextureDataHandle2);
         }
 
         // Define points for equilateral triangles.
@@ -78,8 +81,6 @@ public class LevelScene extends Scene {
             GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
         } else if (aButton.mName.equals("1")) {
             startAnimation(1, 4);
-        } else if (aButton.mName.equals("1")) {
-            startAnimation(1, 4);
         } else if (aButton.mName.equals("2")) {
             startAnimation(2, 4);
         } else if (aButton.mName.equals("3")) {
@@ -98,7 +99,8 @@ public class LevelScene extends Scene {
     //animation methods:
     public void startAnimation(int _start_i, int _end_i) {
         curr_time = 0.0f;
-        animate = true;
+        animate_translation = true;
+        animate_scale = false;
         start_i = _start_i;
         //calculate distance params
         float final_shift_x = (-0.5f + (_end_i % 3) * 0.5f) * scale_val;
@@ -109,21 +111,40 @@ public class LevelScene extends Scene {
 
         d_x = final_shift_x - start_shift_x;
         d_y = final_shift_y - start_shift_y;
+
+        d_scale = 6.0f - 0.16f * scale_val;
     }
 
     public void update() {
 
-        if (!animate || curr_time > 1.0f) {
-            return;
+        if (animate_translation) {
+
+            if (curr_time > 1.0f) {
+                animate_translation = false;
+                animate_scale = true;
+                curr_time = 0.0f;//reset time stample for next scale animation
+                return;
+            }
+            curr_time += 0.01f;
+
+            float start_shift_x = (-0.5f + (start_i % 3) * 0.5f) * scale_val;
+            float start_shift_y = (0.5f - (start_i / 3) * 0.5f) * scale_val;
+
+            start_shift_x += d_x * curr_time;
+            start_shift_y += d_y * curr_time;
+
+            mStickerButtons[start_i].translate(start_shift_x, start_shift_y, 0.0f);
+
+        } else if (animate_scale) {
+            
+            if (curr_time >= 1.0f) {
+                animate_scale = false;
+            }
+            
+            curr_time += 0.01f;
+            mStickerButtons[start_i].scale(0.16f * scale_val + d_scale * curr_time,
+                    0.16f * scale_val + d_scale * curr_time,
+                    1.0f);
         }
-
-        curr_time += 0.01f;
-
-        float start_shift_x = (-0.5f + (start_i % 3) * 0.5f) * scale_val;
-        float start_shift_y = (0.5f - (start_i / 3) * 0.5f) * scale_val;
-
-        start_shift_x += d_x * curr_time;
-        start_shift_y += d_y * curr_time;
-        mStickerButtons[start_i].translate(start_shift_x, start_shift_y, 0.0f);
     }
 }
