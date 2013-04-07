@@ -16,7 +16,7 @@ public class LevelScene extends Scene {
     boolean animate_translation = false;
     boolean animate_scale = false;
     float d_x, d_y;
-    float d_scale;
+    float d_scale_x, d_scale_y;
     int start_i;
 
     public LevelScene(GLRenderer aRenderer) {
@@ -78,13 +78,16 @@ public class LevelScene extends Scene {
     public void onClick(Button aButton) {
         //throw new UnsupportedOperationException("Not supported yet.");
         if (aButton.mName.equals("0")) {
-            GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
-        } else if (aButton.mName.equals("1")) {
+             startAnimation(0, 4);
+        }
+         else if (aButton.mName.equals("1")) {
             startAnimation(1, 4);
         } else if (aButton.mName.equals("2")) {
             startAnimation(2, 4);
         } else if (aButton.mName.equals("3")) {
             startAnimation(3, 4);
+        } else if (aButton.mName.equals("4")) {
+            startAnimation(4, 4);
         } else if (aButton.mName.equals("5")) {
             startAnimation(5, 4);
         } else if (aButton.mName.equals("6")) {
@@ -112,39 +115,81 @@ public class LevelScene extends Scene {
         d_x = final_shift_x - start_shift_x;
         d_y = final_shift_y - start_shift_y;
 
-        d_scale = 6.0f - 0.16f * scale_val;
+        d_scale_x = 6.0f - 0.16f * scale_val;
+        d_scale_y = 9.0f - 0.16f * scale_val;
     }
 
     public void update() {
 
         if (animate_translation) {
-
+            //main sticker moves to central position, others follow him 
+            float[] add_tr_x = new float[9];
+            float[] add_tr_y = new float[9];
             if (curr_time > 1.0f) {
                 animate_translation = false;
                 animate_scale = true;
                 curr_time = 0.0f;//reset time stample for next scale animation
                 return;
             }
-            curr_time += 0.01f;
+            curr_time += 0.015f;
 
-            float start_shift_x = (-0.5f + (start_i % 3) * 0.5f) * scale_val;
-            float start_shift_y = (0.5f - (start_i / 3) * 0.5f) * scale_val;
+            for (int i = 0; i < 9; i++) {
+                float start_shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
+                float start_shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
 
-            start_shift_x += d_x * curr_time;
-            start_shift_y += d_y * curr_time;
+                start_shift_x += d_x * curr_time;
+                start_shift_y += d_y * curr_time;
+               
+                add_tr_x[i] = start_shift_x;
+                 add_tr_y[i] = start_shift_y;
+                mStickerButtons[i].translate(start_shift_x, start_shift_y, 0.0f);
+            }
 
-            mStickerButtons[start_i].translate(start_shift_x, start_shift_y, 0.0f);
-
-        } else if (animate_scale) {
-            
+      //  } else if (animate_scale) {
+            //scale all stickers, move others around the main
+            float start_shift_x;
+            float start_shift_y;
             if (curr_time >= 1.0f) {
                 animate_scale = false;
+                GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
             }
-            
-            curr_time += 0.01f;
-            mStickerButtons[start_i].scale(0.16f * scale_val + d_scale * curr_time,
-                    0.16f * scale_val + d_scale * curr_time,
-                    1.0f);
+            //curr_time += 0.01f;
+
+            int start_col = start_i % 3;
+            int start_row = start_i / 3;
+            float dd_x = 2.0f;
+            float dd_y = 2.0f;
+            for (int i = 0; i < 9; i++) {
+
+                mStickerButtons[i].scale(0.16f * scale_val + d_scale_x * curr_time,
+                        0.16f * scale_val + d_scale_y * curr_time,
+                        1.0f);
+
+                if (i == start_i) {
+                    continue;
+                }
+                
+                start_shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val + d_x;
+                start_shift_y = (0.5f - (i / 3) * 0.5f) * scale_val + d_y;
+
+                int curr_row = i / 3;
+                int curr_col = i % 3;
+
+                if (curr_row < start_row) {
+                    start_shift_y += dd_y * 9 * curr_time;
+                } else if (curr_row > start_row) {
+                    start_shift_y -= dd_y * 9 * curr_time;
+                }
+ 
+                if (curr_col < start_col) {
+                    start_shift_x -= dd_x * 6 * curr_time;
+                } else if (curr_col > start_col) {
+                    start_shift_x += dd_x * 6 * curr_time;
+                }
+
+                mStickerButtons[i].translate(start_shift_x + add_tr_x[i], start_shift_y + add_tr_y[i], 0.0f);
+
+            }
         }
     }
 }
