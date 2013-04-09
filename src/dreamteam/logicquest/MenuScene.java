@@ -26,9 +26,12 @@ public class MenuScene extends Scene {
 
     public MenuScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
+
+        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+
         mBackground = new QuadImage(aRenderer);
         mBackground.setTexture(aRenderer.mTextureDataHandle);
-        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+
         for (int i = 0;
                 i < 3; ++i) {
             mButtons[i] = new Button(aRenderer);
@@ -40,40 +43,50 @@ public class MenuScene extends Scene {
         mButtons[1].setName("some name");
         mButtons[2].setName("some name");
     }
-    
+
     public void onResize(GLRenderer aRenderer) {
+       
+        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+       
+        for (int i = 0; i < 3; ++i) {
+            mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
+            mButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
+            mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
+        }
+        
         mBackground.scale(aRenderer.mRatio * aRenderer.mScreenSize, aRenderer.mScreenSize, 1.f);
+     
     }
-    
+
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
     }
-    
+
     public void draw(GLRenderer aRenderer) {
         mBackground.draw(aRenderer);
         for (Button button : mButtons) {
             button.draw(aRenderer);
         }
     }
-    
+
     public void onTouchDown(float aX, float aY) {
         for (Button button : mButtons) {
             button.onTouchDown(this, aX, aY);
         }
     }
-    
+
     public void onTouchMove(float aX, float aY) {
-        
+
         for (Button button : mButtons) {
             button.onTouchMove(this, aX, aY);
         }
     }
-    
+
     public void onTouchUp(float aX, float aY) {
         for (Button button : mButtons) {
             button.onTouchUp(this, aX, aY);
         }
     }
-    
+
     public void onClick(Button aButton) {
         if (aButton.mName.equals("StartGameButton")) {
             GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.LEVEL_SCENE);

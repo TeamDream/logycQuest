@@ -166,7 +166,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
         mTextureDataHandle = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.images);
         mTextureDataHandle1 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
-        mTextureDataHandle2 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.sticker_mirrow);
+        mTextureDataHandle2 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
 
 
         mMenuScene = new MenuScene(this);
@@ -226,6 +226,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+        
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
         // Create a new perspective projection matrix. The height will stay the same
