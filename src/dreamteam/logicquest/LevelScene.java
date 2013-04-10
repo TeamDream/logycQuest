@@ -16,6 +16,7 @@ public class LevelScene extends Scene {
     float curr_time;
     boolean animate_translation = false;
     boolean animate_scale = false;
+    boolean reverse_animation = false;
     float d_x, d_y;
     float d_scale_x, d_scale_y;
     int start_i;
@@ -94,6 +95,11 @@ public class LevelScene extends Scene {
     }
 
     //animation methods:
+    public void reverseAnimation() {
+        curr_time = 0.0f;
+        animate_translation = true;
+        reverse_animation = true;
+    }
     public void startAnimation(int _start_i, int _end_i) {
         curr_time = 0.0f;
         animate_translation = true;
@@ -119,13 +125,19 @@ public class LevelScene extends Scene {
             //main sticker moves to central position, others follow him 
             float[] add_tr_x = new float[9];
             float[] add_tr_y = new float[9];
-            if (curr_time > 1.0f) {
+            if (curr_time > 1.0f && !reverse_animation) {
                 animate_translation = false;
                 animate_scale = true;
                 curr_time = 0.0f;//reset time stample for next scale animation
                 return;
             }
-            curr_time += 0.02f;
+            else if (reverse_animation && curr_time < 0.0f) {
+                animate_translation = false;
+                reverse_animation = false;
+                return;
+            }
+            
+            curr_time += reverse_animation? -0.02f: +0.02f;
 
             for (int i = 0; i < 9; i++) {
                 float start_shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
@@ -142,9 +154,19 @@ public class LevelScene extends Scene {
             //scale all stickers, move others around the main
             float start_shift_x;
             float start_shift_y;
-            if (curr_time > 1.0f) {
+            if (curr_time > 1.0f && !reverse_animation) {
                 animate_scale = false;
-                GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
+                if(start_i == 0) {
+                    reverse_animation = true;
+                } else {
+                    GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
+                }
+            }
+            
+            if (reverse_animation && curr_time < 0.0f) {
+                animate_translation = false;
+                reverse_animation = false;
+                return;
             }
 
             int start_col = start_i % 3;
