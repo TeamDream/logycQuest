@@ -223,6 +223,12 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     public void onTouchUp(float aX, float aY) {
         curr_scene.onTouchUp(aX, aY);
     }
+    
+    public void onDoubleTap() {
+        if (mSceneType == SceneType.QUEST_SCENE) {
+            changeSceneType(SceneType.LEVEL_SCENE);
+        }
+    }
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {

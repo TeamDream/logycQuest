@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 
 public class MainActivity extends Activity {
 
     public GLView mGLView;
     public static MainActivity singleton = null;
 
+    
     public MainActivity() {
         singleton = this;
     }
@@ -44,6 +45,7 @@ public class MainActivity extends Activity {
         }
 
         setContentView(mGLView);
+       
     }
 
     @Override
@@ -59,4 +61,5 @@ public class MainActivity extends Activity {
         super.onPause();
         mGLView.onPause();
     }
+  
 }

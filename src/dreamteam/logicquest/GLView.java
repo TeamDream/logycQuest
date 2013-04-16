@@ -10,19 +10,19 @@ package dreamteam.logicquest;
  */
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-class GLView extends GLSurfaceView {
+class GLView extends GLSurfaceView  {
 
     public static GLView singleton = null;
-
+    private GestureDetectorCompat mDetector;
+  
     public GLView(Context context) {
         super(context);
-        singleton = this;
-        //setEGLContextFactory(new ContextFactory());
-        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);           
-
-
+        singleton = this;      
+        mDetector = new GestureDetectorCompat(context, new MyGestureListener());
     }
 
     public void stop() {
@@ -74,6 +74,28 @@ class GLView extends GLSurfaceView {
                 });
                 break;
         }
+        this.mDetector.onTouchEvent(e);//gesture events detector
+
+        super.onTouchEvent(e);
+
+        
         return true;
     }
+     
 }
+
+
+class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2, 
+                float velocityX, float velocityY) {
+            return true;
+        }
+        
+        public boolean onDoubleTap(MotionEvent e) {
+            GLRenderer.INSTANSE.onDoubleTap();
+            return false;
+        }
+        
+ }
