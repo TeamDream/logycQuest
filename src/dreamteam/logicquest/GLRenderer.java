@@ -60,6 +60,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     private float colors[] = new float[4];//JUST FOR TESTING MOUS EVENT.
     protected float mScreenSize = 10.f;
     protected float mRatio = 1.f;
+    protected float mRatio_y = 1.f;
     private SceneType mSceneType = SceneType.MENU_SCENE;
     /**
      * Store the model matrix. This matrix is used to move models from object
@@ -238,6 +239,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         // Create a new perspective projection matrix. The height will stay the same
         // while the width will vary as per aspect ratio.
         mRatio = (float) width / height;
+        mRatio_y = (float) height / width;
         final float left = -mRatio;
         final float right = mRatio;
         final float bottom = -1.0f;

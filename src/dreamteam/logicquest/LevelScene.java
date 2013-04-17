@@ -22,23 +22,25 @@ public class LevelScene extends Scene {
 
     public LevelScene(GLRenderer aRenderer) {
         float shift_x, shift_y;
-        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_x = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_y = aRenderer.mScreenSize * aRenderer.mRatio_y;
+        
         for (int i = 0;
                 i < 9; ++i) {
 
-            shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
-            shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
+            shift_x = (-0.5f + (i % 3) * 0.5f - 0.1f + 0.1f * (i % 3) ) * scale_val_x; // magic placement
+            shift_y = (0.5f - (i / 3) * 0.5f - 0.1f + 0.1f * (i / 3) ) * scale_val_y;
+            
             mStickerButtons[i] = new Button(aRenderer);
             mStickerButtons[i].translate(shift_x, shift_y, 0.f);
-            // mStickerButtons[i].scale(scale_val, scale_val, 1.0f);
-            mStickerButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
+            mStickerButtons[i].scale(0.24f * scale_val_x, 0.16f * scale_val_y, 1.0f);
             mStickerButtons[i].setName(Integer.toString(i));
             mStickerButtons[i].setTexture(aRenderer.mTextureDataHandle2);
         }
 
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
-        mBackground.scale(scale_val, scale_val, 1.0f);
+        mBackground.scale(scale_val_x, scale_val_y, 1.0f);
         mBackground.setTexture(aRenderer.mTextureDataHandle);
     }
 
@@ -52,15 +54,21 @@ public class LevelScene extends Scene {
     }
 
     public void onResize(GLRenderer aRenderer) {
-        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_x = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_y = aRenderer.mScreenSize * aRenderer.mRatio_y;
+        
         float shift_x, shift_y;
         for (int i = 0; i < 9; ++i) {
-            shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
-            shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
+            
+            shift_x = (-0.5f + (i % 3) * 0.5f - 0.1f + 0.1f * (i % 3) ) * scale_val_x; // magic placement
+            
+            shift_y = (0.5f - (i / 3) * 0.5f - 0.1f + 0.1f * (i / 3) ) * scale_val_y;
+            
+            
             mStickerButtons[i].translate(shift_x, shift_y, 0.f);
-            mStickerButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
+            mStickerButtons[i].scale(0.24f * scale_val_x, 0.16f * scale_val_y, 1.0f);
         }
-        mBackground.scale(scale_val, aRenderer.mScreenSize, 1.f);
+        mBackground.scale(scale_val_x, aRenderer.mScreenSize, 1.f);
     }
 
     @Override
@@ -102,17 +110,18 @@ public class LevelScene extends Scene {
         streight_animation = true;
         start_i = _start_i;
         //calculate distance params
-        float final_shift_x = (-0.5f + (_end_i % 3) * 0.5f) * scale_val;
-        float final_shift_y = (0.5f - (_end_i / 3) * 0.5f) * scale_val;
 
-        float start_shift_x = (-0.5f + (start_i % 3) * 0.5f) * scale_val;
-        float start_shift_y = (0.5f - (start_i / 3) * 0.5f) * scale_val;
+        float final_shift_x = (-0.5f + (_end_i % 3) * 0.5f - 0.1f + 0.1f * (_end_i % 3)) * scale_val_x;
+        float final_shift_y = (0.5f - (_end_i / 3) * 0.5f - 0.1f + 0.1f * (_end_i / 3)) * scale_val_y;
+
+        float start_shift_x = (-0.5f + (start_i % 3) * 0.5f - 0.1f + 0.1f * (start_i % 3)) * scale_val_x;
+        float start_shift_y = (0.5f - (start_i / 3) * 0.5f - 0.1f + 0.1f * (start_i / 3)) * scale_val_y;
 
         d_x = final_shift_x - start_shift_x;
         d_y = final_shift_y - start_shift_y;
 
-        d_scale_x = 6.0f - 0.16f * scale_val;
-        d_scale_y = 9.f - 0.16f * scale_val;
+        d_scale_x = 6.0f - 0.24f * scale_val_x;
+        d_scale_y = 9.f - 0.16f * scale_val_y;
     }
 
     public void update(GLRenderer aRenderer) {
@@ -135,8 +144,8 @@ public class LevelScene extends Scene {
             curr_time += reverse_animation? -0.02f: +0.02f;
 
             for (int i = 0; i < 9; i++) {
-                float start_shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
-                float start_shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
+                float start_shift_x = (-0.5f + (i % 3) * 0.5f - 0.1f + 0.1f * (i % 3) ) * scale_val_x; // magic placement
+                float start_shift_y = (0.5f - (i / 3) * 0.5f - 0.1f + 0.1f * (i / 3) ) * scale_val_y;
 
                 start_shift_x += d_x * curr_time;
                 start_shift_y += d_y * curr_time;
@@ -162,13 +171,12 @@ public class LevelScene extends Scene {
 
             int start_col = start_i % 3;
             int start_row = start_i / 3;
-           // float dd_x = 20.0f;
-           // float dd_y = 20.0f;
+            
             for (int i = 0; i < 9; i++) {
             float dd_x = 20.0f;
             float dd_y = 20.0f;
-                mStickerButtons[i].scale(0.16f * scale_val + d_scale_x * curr_time,
-                        0.16f * scale_val + d_scale_y * curr_time,
+                mStickerButtons[i].scale(0.24f * scale_val_x + d_scale_x * curr_time,
+                        0.16f * scale_val_y + d_scale_y * curr_time,
                         1.0f);
 //                mBackground.scale(scale_val + d_scale_x * curr_time,
 //                        aRenderer.mScreenSize + d_scale_x * curr_time,
@@ -177,8 +185,9 @@ public class LevelScene extends Scene {
                     continue;
                 }
                 
-                start_shift_x = (-0.5f + (i % 3) * 0.5f) * scale_val;
-                start_shift_y = (0.5f - (i / 3) * 0.5f) * scale_val;
+            start_shift_x = (-0.5f + (i % 3) * 0.5f - 0.1f + 0.1f * (i % 3) ) * scale_val_x; // magic placement
+            start_shift_y = (0.5f - (i / 3) * 0.5f - 0.1f + 0.1f * (i / 3) ) * scale_val_y;
+                
                 int curr_row = i / 3;
                 int curr_col = i % 3;
                 

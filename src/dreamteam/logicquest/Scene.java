@@ -11,7 +11,8 @@ package dreamteam.logicquest;
 public abstract class Scene {
 
 
-    float scale_val;
+    float scale_val_x;
+    float scale_val_y;
     public abstract void draw(GLRenderer aRenderer);
     
     public abstract void onTouchDown(float aX, float aY);

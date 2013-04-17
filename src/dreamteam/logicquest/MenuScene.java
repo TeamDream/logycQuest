@@ -27,7 +27,7 @@ public class MenuScene extends Scene {
     public MenuScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
 
-        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_x = aRenderer.mScreenSize * aRenderer.mRatio;
 
         mBackground = new QuadImage(aRenderer);
         mBackground.setTexture(aRenderer.mTextureDataHandle);
@@ -36,7 +36,7 @@ public class MenuScene extends Scene {
                 i < 3; ++i) {
             mButtons[i] = new Button(aRenderer);
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
-            mButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
+            mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
             mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
         }
         mButtons[0].setName("StartGameButton");
@@ -46,11 +46,11 @@ public class MenuScene extends Scene {
 
     public void onResize(GLRenderer aRenderer) {
        
-        scale_val = aRenderer.mScreenSize * aRenderer.mRatio;
+        scale_val_x = aRenderer.mScreenSize * aRenderer.mRatio;
        
         for (int i = 0; i < 3; ++i) {
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
-            mButtons[i].scale(0.16f * scale_val, 0.16f * scale_val, 1.0f);
+            mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
             mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
         }
         
