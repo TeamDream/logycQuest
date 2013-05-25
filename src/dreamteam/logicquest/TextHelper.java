@@ -17,6 +17,10 @@ import android.opengl.GLUtils;
  */
 public enum TextHelper {
     INSTANCE;
+    final private int left_border = 25;
+    final private int right_border = 220;
+    final private int upper_border = 70;
+    final private int down_border = 225;
     public void setText(Bitmap bitmap, int mTextureDataHandle, String text, 
                         int text_size, boolean center) {
         // Draw the text
@@ -31,16 +35,55 @@ public enum TextHelper {
 
         // Draw the text
         Paint textPaint = new Paint();
+ 
         textPaint.setTextSize(text_size);
+ 
         textPaint.setAntiAlias(true);
         textPaint.setARGB(0xff, 0x00, 0x00, 0x00);
         // draw the text centered
-        int offset_x = center ? 100 : 16;
-        int offset_y = center ? 175 : 112;
-        canvas.drawText(text, offset_x, offset_y, textPaint);
+        int offset_x = center ? 100 : left_border;
+        int offset_y = center ? 175 : upper_border;
+       
+        //starting text drawing. Parse strings ending
+        int max_symb_count = (right_border - left_border)/ (text_size/2);
+        int symb_to_draw = text.length();
+        int start,curr, end ;
+        start = curr = end = 0;
+        int strings_count = 0;
+        while(symb_to_draw > 0 ) {   
+            if (symb_to_draw > max_symb_count) {
+                start = text.length() - symb_to_draw;
+                curr = end = start;
+                while(curr < text.length()) {
+                    
+                    if (curr - start > max_symb_count) {
+                        break;
+                    }
+
+                    if (text.charAt(curr) == ' ') {
+                        end = curr;
+                    } 
+                    curr++;
+                }
+                canvas.drawText(text.substring(start, end), offset_x, offset_y + strings_count*(text_size), textPaint);
+                strings_count++;
+                symb_to_draw = text.length() - end;
+            }
+            else {
+                canvas.drawText(text.substring(end), offset_x, offset_y + strings_count*(text_size), textPaint);
+                break;
+            }       
+        }
+        //end parsing
+         
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
+    
+    public String getTextById() {
+        return "";
+    } 
+    
 }

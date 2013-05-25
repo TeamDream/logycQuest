@@ -15,7 +15,7 @@ public class QuestScene extends Scene {
 
     QuadImage mBackground;
     Sticker mSticker;
-
+    int question_id;
     public QuestScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
@@ -42,7 +42,7 @@ public class QuestScene extends Scene {
 
     public void onTouchDown(float aX, float aY) {
         mSticker.onTouchDown(aX, aY);
-        TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mTextureDataHandle2, "SUCK IT", 32, false);
+        
     }
 
     public void onTouchMove(float aX, float aY) {
@@ -54,5 +54,11 @@ public class QuestScene extends Scene {
     }
 
     public void onClick(Button aButton) {
+    }
+    
+    public void updateQuestion(int id) {
+        question_id = id;
+        TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mTextureDataHandle2,
+                                    "Даже Если Пролетариат Возьмет Власть В Свои Руки, Весна Все Равно Достанется Нам,А Цели Войны Останутся Целями Войны" + Integer.toString(question_id), 16, false);
     }
 }

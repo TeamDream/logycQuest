@@ -163,6 +163,7 @@ public class LevelScene extends Scene {
             if (curr_time > 1.0f && !reverse_animation) {
                 reverse_animation = true;
                 GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
+                GLRenderer.INSTANSE.mQuestScene.updateQuestion(start_i);
             }
             
             if (reverse_animation && curr_time < 0.0f) {
@@ -180,9 +181,6 @@ public class LevelScene extends Scene {
                 mStickerButtons[i].scale(0.24f * scale_val_x + d_scale_x * curr_time,
                         0.16f * scale_val_y + d_scale_y * curr_time,
                         1.0f);
-//                mBackground.scale(scale_val + d_scale_x * curr_time,
-//                        aRenderer.mScreenSize + d_scale_x * curr_time,
-//                        1.0f);
                 if (i == start_i) {
                     continue;
                 }
