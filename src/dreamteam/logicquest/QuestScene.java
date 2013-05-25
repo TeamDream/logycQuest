@@ -25,6 +25,7 @@ public class QuestScene extends Scene {
         mSticker.scale(6.0f, 9.f, 1.0f);
         mSticker.setName("StartGameButton");
         mSticker.setTexture(aRenderer.mTextureDataHandle2);
+        mSticker.createBitmap();
     }
 
     public void onResize(GLRenderer aRenderer) {
@@ -41,6 +42,7 @@ public class QuestScene extends Scene {
 
     public void onTouchDown(float aX, float aY) {
         mSticker.onTouchDown(aX, aY);
+        TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mTextureDataHandle2, "SUCK IT", 32, false);
     }
 
     public void onTouchMove(float aX, float aY) {

@@ -4,7 +4,12 @@
  */
 package dreamteam.logicquest;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,6 +31,7 @@ public class QuadImage {
     protected float mTranslateX = 0.0f;
     protected float mTranslateY = 0.0f;
     protected float mTranslateZ = 0.0f;
+    protected Bitmap bitmap;
     /**
      * This is a handle to our texture data.
      */
@@ -52,12 +58,13 @@ public class QuadImage {
 
         final float[] textureCoordinateData = {
             // Front face
+            0.0f, 1.0f,
             1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f};
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f};
+
         // Initialize the buffers.
         mVertices = ByteBuffer.allocateDirect(VerticesData.length * aRenderer.mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -74,6 +81,17 @@ public class QuadImage {
         mTextureDataHandle = TextureID;//TextureHelper.loadTexture(MainActivity.singleton, TextureID);
     }
 
+     public void createBitmap() {
+        // Create an empty, mutable bitmap
+        bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
+        // get a canvas to paint over the bitmap
+        Canvas canvas = new Canvas(bitmap);
+        bitmap.eraseColor(0);
+
+ }
+
+
+    
     public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
         mScaleParameterX = aScaleParameterX;
         mScaleParameterY = aScaleParameterY;

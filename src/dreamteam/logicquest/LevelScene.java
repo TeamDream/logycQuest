@@ -35,7 +35,9 @@ public class LevelScene extends Scene {
             mStickerButtons[i].translate(shift_x, shift_y, 0.f);
             mStickerButtons[i].scale(0.24f * scale_val_x, 0.16f * scale_val_y, 1.0f);
             mStickerButtons[i].setName(Integer.toString(i));
-            mStickerButtons[i].setTexture(aRenderer.mTextureDataHandle2);
+            mStickerButtons[i].setTexture(aRenderer.mTextureLevelDataHandle[i]);
+            mStickerButtons[i].createBitmap();
+            TextHelper.INSTANCE.setText(mStickerButtons[i].bitmap, aRenderer.mTextureLevelDataHandle[i], Integer.toString(i), 128, true);
         }
 
         // Define points for equilateral triangles.

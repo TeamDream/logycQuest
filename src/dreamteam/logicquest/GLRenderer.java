@@ -19,7 +19,7 @@ import android.os.SystemClock;
 public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
 
     INSTANSE;
-    private final Context mActivityContext = MainActivity.singleton;
+    protected final Context mActivityContext = MainActivity.singleton;
     /**
      * How many bytes per float.
      */
@@ -168,7 +168,10 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         mTextureDataHandle = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.images);
         mTextureDataHandle1 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
         mTextureDataHandle2 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
-
+        
+        for(int i = 0; i < 9; i++) {//hmm, its stupid, but i dont know another decision
+            mTextureLevelDataHandle[i] = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
+        }
 
         mMenuScene = new MenuScene(this);
         mLevelScene = new LevelScene(this);
@@ -261,7 +264,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     protected int mTextureDataHandle;
     protected int mTextureDataHandle1;
     protected int mTextureDataHandle2;
-
+    protected int[] mTextureLevelDataHandle = new int[9];
     @Override
     public void onDrawFrame(GL10 glUnused) {
 

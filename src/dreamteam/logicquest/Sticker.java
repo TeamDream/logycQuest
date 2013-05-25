@@ -4,8 +4,12 @@
  */
 package dreamteam.logicquest;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,6 +43,7 @@ public class Sticker {
     private float mTime = 0.f;
     private float mDetalization = 0.f;
     private final FloatBuffer mTextureCoordinates;
+    protected Bitmap bitmap;
     /**
      * This is a handle to our texture data.
      */
@@ -79,7 +84,7 @@ public class Sticker {
                 VerticesData[dataIndex] = leftBottomX;
                 VerticesData[dataIndex + 1] = leftBottomY;
                 VerticesData[dataIndex + 2] = 0.0f;
-                textureCoordinateData[textureIndex] = 1.f - aDetalization * i / 2.f;
+                textureCoordinateData[textureIndex] = 1.f - aDetalization * -i / 2.f;
                 textureCoordinateData[textureIndex + 1] = 1.f - aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i][j + 1].buffer.add(new Integer(dataIndex));
                 // R, G, B, A            
@@ -92,7 +97,7 @@ public class Sticker {
                 VerticesData[dataIndex + 7] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 8] = leftBottomY;
                 VerticesData[dataIndex + 9] = 0.0f;
-                textureCoordinateData[textureIndex + 2] = 1.f - aDetalization * (i+1) / 2.f;
+                textureCoordinateData[textureIndex + 2] = 1.f - aDetalization * -(i + 1) / 2.f;
                 textureCoordinateData[textureIndex + 3] = 1.f - aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 7));
                 // R, G, B, A            
@@ -105,7 +110,7 @@ public class Sticker {
                 VerticesData[dataIndex + 14] = leftBottomX;
                 VerticesData[dataIndex + 15] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 16] = 0.0f;
-                textureCoordinateData[textureIndex + 4] = 1- aDetalization * i / 2.f;
+                textureCoordinateData[textureIndex + 4] = 1 - aDetalization * -i / 2.f;
                 textureCoordinateData[textureIndex + 5] = 1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i][j].buffer.add(new Integer(dataIndex + 14));
 
@@ -122,8 +127,8 @@ public class Sticker {
                 VerticesData[dataIndex + 22] = leftBottomY;
                 VerticesData[dataIndex + 23] = 0.0f;
 
-                textureCoordinateData[textureIndex + 6] = 1 - aDetalization * (i+1) / 2.f;
-                textureCoordinateData[textureIndex + 7] = 1.f- aDetalization * (mQuadsInCol - j - 1) / 2.f;
+                textureCoordinateData[textureIndex + 6] = 1 - aDetalization * -(i + 1) / 2.f;
+                textureCoordinateData[textureIndex + 7] = 1.f - aDetalization * (mQuadsInCol - j - 1) / 2.f;
                 mControlPoints[i + 1][j + 1].buffer.add(new Integer(dataIndex + 21));
                 // R, G, B, A            
                 VerticesData[dataIndex + 24] = 1.0f;
@@ -135,8 +140,8 @@ public class Sticker {
                 VerticesData[dataIndex + 28] = leftBottomX;
                 VerticesData[dataIndex + 29] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 30] = 0.0f;
-                textureCoordinateData[textureIndex + 8] = 1 - aDetalization * i / 2.f;
-                textureCoordinateData[textureIndex + 9] =  1 - aDetalization * (mQuadsInCol - j) / 2.f;
+                textureCoordinateData[textureIndex + 8] = 1 - aDetalization * -i / 2.f;
+                textureCoordinateData[textureIndex + 9] = 1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i][j].buffer.add(new Integer(dataIndex + 28));
                 // R, G, B, A            
                 VerticesData[dataIndex + 31] = 1.0f;
@@ -148,8 +153,8 @@ public class Sticker {
                 VerticesData[dataIndex + 35] = leftBottomX + aDetalization;
                 VerticesData[dataIndex + 36] = leftBottomY + aDetalization;
                 VerticesData[dataIndex + 37] = 0.0f;
-                textureCoordinateData[textureIndex + 10] = 1 - aDetalization * (i+1) / 2.f;
-                textureCoordinateData[textureIndex + 11] =  1 - aDetalization * (mQuadsInCol - j) / 2.f;
+                textureCoordinateData[textureIndex + 10] = 1 - aDetalization * -(i + 1) / 2.f;
+                textureCoordinateData[textureIndex + 11] = 1 - aDetalization * (mQuadsInCol - j) / 2.f;
                 mControlPoints[i + 1][j].buffer.add(new Integer(dataIndex + 35));
                 // R, G, B, A            
                 VerticesData[dataIndex + 38] = 1.0f;
@@ -189,9 +194,23 @@ public class Sticker {
         mTranslateZ = aTranslateZ;
     }
 
+    public void createBitmap() {
+        // Create an empty, mutable bitmap
+        bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
+        // get a canvas to paint over the bitmap
+        Canvas canvas = new Canvas(bitmap);
+        bitmap.eraseColor(0);
+        // get a background image from resources
+        // note the image format must match the bitmap format
+        
+        Drawable background = GLRenderer.INSTANSE.mActivityContext.getResources().getDrawable(R.drawable.st1);
+        background.setBounds(0, 0, 256, 256);
+        background.draw(canvas); // draw the background to our bitmap
+    }
     public void draw(GLRenderer aRenderer) {
         float deltaTime = mAnimationDirection * 0.01f;
         update(deltaTime);
+
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
@@ -229,7 +248,10 @@ public class Sticker {
         Matrix.multiplyMM(aRenderer.mMVPMatrix, 0, aRenderer.mProjectionMatrix, 0, aRenderer.mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(aRenderer.mMVPMatrixHandle, 1, false, aRenderer.mMVPMatrix, 0);
+
+
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mVertecesCount);
+
     }
 
     void moveControlPoint(int aIndexX, int aIndexY, float aDeltaX, float aDeltaY, float aDeltaZ) {
