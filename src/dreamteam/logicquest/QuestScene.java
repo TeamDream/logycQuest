@@ -59,6 +59,6 @@ public class QuestScene extends Scene {
     public void updateQuestion(int id) {
         question_id = id;
         TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mTextureDataHandle2,
-                                    "Даже Если Пролетариат Возьмет Власть В Свои Руки, Весна Все Равно Достанется Нам,А Цели Войны Останутся Целями Войны" + Integer.toString(question_id), 16, false);
+                                    question_id, 16, false);
     }
 }

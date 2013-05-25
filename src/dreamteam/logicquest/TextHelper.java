@@ -21,6 +21,12 @@ public enum TextHelper {
     final private int right_border = 220;
     final private int upper_border = 70;
     final private int down_border = 225;
+
+    public void setText(Bitmap bitmap, int mTextureDataHandle, int id,
+                        int text_size, boolean center) {
+        setText(bitmap,mTextureDataHandle, getTextById(id), text_size, center);
+    }
+    
     public void setText(Bitmap bitmap, int mTextureDataHandle, String text, 
                         int text_size, boolean center) {
         // Draw the text
@@ -82,8 +88,8 @@ public enum TextHelper {
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
     
-    public String getTextById() {
-        return "";
+    public String getTextById(int id) {
+        return MainActivity.singleton.getString(R.string.quest1 +id);
     } 
     
 }
