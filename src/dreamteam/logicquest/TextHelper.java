@@ -89,6 +89,9 @@ public enum TextHelper {
     }
     
     public String getTextById(int id) {
+      if (id > 11 ) {
+          return " other";
+      }
         return MainActivity.singleton.getString(R.string.quest1 +id);
     } 
     

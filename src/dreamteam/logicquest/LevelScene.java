@@ -22,7 +22,7 @@ public class LevelScene extends Scene {
     boolean list_animation = false;
     
     int curr_page = 0;
-    
+    float prev_x = 0;//previous x coordinate for geture recognition
     float d_x, d_y;
     float d_scale_x, d_scale_y;
     int start_i;
@@ -101,6 +101,7 @@ public class LevelScene extends Scene {
 
     @Override
     public void onTouchDown(float aX, float aY) {
+        prev_x = aX;
         for (Button stickerButton : mStickerButtons) {
             stickerButton.onTouchDown(this, aX, aY);
         }
@@ -108,7 +109,7 @@ public class LevelScene extends Scene {
 
     @Override
     public void onTouchMove(float aX, float aY) {
-         changeListAnimation(true);
+         
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -117,6 +118,10 @@ public class LevelScene extends Scene {
         //throw new UnsupportedOperationException("Not supported yet.");
         for (Button stickerButton : mStickerButtons) {
             stickerButton.onTouchUp(this, aX, aY);
+        }
+        
+        if(Math.abs(prev_x - aX) > 0.25f) {
+            changeListAnimation(aX < prev_x);
         }
     }
 
@@ -219,7 +224,7 @@ public class LevelScene extends Scene {
                 return;
             }
 
-            curr_time += 0.02f;
+            curr_time += 0.03f;
 
             for (int i = 0; i < 9; i++) {
                 float start_shift_x = (-0.5f + (i % 3) * 0.5f - 0.1f + 0.1f * (i % 3)) * scale_val_x; // magic placement
@@ -277,7 +282,7 @@ public class LevelScene extends Scene {
             if (curr_time > 1.0f && !reverse_animation) {
                 reverse_animation = true;
                 GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.QUEST_SCENE);
-                GLRenderer.INSTANSE.mQuestScene.updateQuestion(start_i);
+                GLRenderer.INSTANSE.mQuestScene.updateQuestion(start_i + 9*curr_page);
             }
             
             if (reverse_animation && curr_time < 0.0f) {
