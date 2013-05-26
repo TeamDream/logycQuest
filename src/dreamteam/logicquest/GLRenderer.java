@@ -171,6 +171,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         
         for(int i = 0; i < 9; i++) {//hmm, its stupid, but i dont know another decision
             mTextureLevelDataHandle[i] = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
+            aTextureLevelDataHandle[i] = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
         }
 
         mMenuScene = new MenuScene(this);
@@ -265,6 +266,7 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
     protected int mTextureDataHandle1;
     protected int mTextureDataHandle2;
     protected int[] mTextureLevelDataHandle = new int[9];
+    protected int[] aTextureLevelDataHandle = new int[9];
     @Override
     public void onDrawFrame(GL10 glUnused) {
 
