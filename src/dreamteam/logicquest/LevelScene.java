@@ -195,7 +195,7 @@ public class LevelScene extends Scene {
         if (right) {
             d_x = start_shift_x1 + 3 * distance;
         } else {
-            d_x = start_shift_x1 - 3 * distance;;
+            d_x = start_shift_x1 - 3 * distance;
         }
 
         for (int i = 0; i < 9; i++) {

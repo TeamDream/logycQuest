@@ -37,7 +37,7 @@ public class MenuScene extends Scene {
             mButtons[i] = new Button(aRenderer);
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
             mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
-            mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
+            mButtons[i].setTexture(aRenderer.mMenuImage);
         }
         mButtons[0].setName("StartGameButton");
         mButtons[1].setName("some name");
@@ -51,7 +51,7 @@ public class MenuScene extends Scene {
         for (int i = 0; i < 3; ++i) {
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
             mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
-            mButtons[i].setTexture(aRenderer.mTextureDataHandle1);
+            mButtons[i].setTexture(aRenderer.mMenuImage);
         }
         
         mBackground.scale(aRenderer.mRatio * aRenderer.mScreenSize, aRenderer.mScreenSize, 1.f);

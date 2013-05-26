@@ -166,8 +166,9 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         // Load the texture
 
         mTextureDataHandle = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.images);
-        mTextureDataHandle1 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
-        mTextureDataHandle2 = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
+        mMenuImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
+        mQuestionImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
+        aQuestionImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
         
         for(int i = 0; i < 9; i++) {//hmm, its stupid, but i dont know another decision
             mTextureLevelDataHandle[i] = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
@@ -263,8 +264,9 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      * This is a handle to our texture data.
      */
     protected int mTextureDataHandle;
-    protected int mTextureDataHandle1;
-    protected int mTextureDataHandle2;
+    protected int mMenuImage;
+    protected int mQuestionImage;
+    protected int aQuestionImage;
     protected int[] mTextureLevelDataHandle = new int[9];
     protected int[] aTextureLevelDataHandle = new int[9];
     @Override
@@ -314,9 +316,11 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
                     MainActivity.singleton.finish();
                     break;
                 case LEVEL_SCENE:
+                    mSceneType = SceneType.MENU_SCENE;
                     curr_scene = mMenuScene;
                     break;
                 case QUEST_SCENE:
+                    mSceneType = SceneType.LEVEL_SCENE;
                     curr_scene = mLevelScene;
                     break;
             }
