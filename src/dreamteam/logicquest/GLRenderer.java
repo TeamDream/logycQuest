@@ -308,7 +308,19 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         GLES20.glDisableVertexAttribArray(mColorHandle);
         onDrawFrame(null);
     }
-
+    public void changeSceneBack() {
+        switch (mSceneType) {
+                case MENU_SCENE:
+                    MainActivity.singleton.finish();
+                    break;
+                case LEVEL_SCENE:
+                    curr_scene = mMenuScene;
+                    break;
+                case QUEST_SCENE:
+                    curr_scene = mLevelScene;
+                    break;
+            }
+    }
     public void changeSceneType(SceneType _type) {
         mSceneType = _type;
         switch (mSceneType) {

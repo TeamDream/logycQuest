@@ -31,7 +31,11 @@ class GLView extends GLSurfaceView  {
             }
         });
     }
-
+    
+    public void onBackPressed() {
+        GLRenderer.INSTANSE.changeSceneBack();
+    }
+    
     @Override
     public void onResume() {
         super.onResume();
@@ -83,6 +87,7 @@ class GLView extends GLSurfaceView  {
     }
      
 }
+
 
 
 class MyGestureListener extends GestureDetector.SimpleOnGestureListener {

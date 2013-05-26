@@ -61,5 +61,10 @@ public class MainActivity extends Activity {
         super.onPause();
         mGLView.onPause();
     }
+    
+    @Override
+    public void onBackPressed() {
+        mGLView.onBackPressed();
+    }
   
 }
