@@ -6,10 +6,7 @@ package dreamteam.logicquest;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
