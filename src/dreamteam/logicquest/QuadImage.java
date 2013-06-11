@@ -84,10 +84,7 @@ public class QuadImage {
      public void createBitmap() {
         // Create an empty, mutable bitmap
         bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
-        // get a canvas to paint over the bitmap
-        Canvas canvas = new Canvas(bitmap);
         bitmap.eraseColor(0);
-
  }
 
 
@@ -112,6 +109,7 @@ public class QuadImage {
 
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        
         GLES20.glUniform1i(aRenderer.mTextureUniformHandle, 0);
         mVertices.position(aRenderer.mPositionOffset);
         GLES20.glVertexAttribPointer(aRenderer.mPositionHandle, aRenderer.mPositionDataSize, GLES20.GL_FLOAT, false,
@@ -147,6 +145,13 @@ public class QuadImage {
         Matrix.multiplyMM(aRenderer.mMVPMatrix, 0, aRenderer.mProjectionMatrix, 0, aRenderer.mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(aRenderer.mMVPMatrixHandle, 1, false, aRenderer.mMVPMatrix, 0);
+        
+        
+        // Colors is a pointer to unsigned bytes (4 per color).
+    // Should alternate in opacity.
+
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
+        
+  
     }
 }

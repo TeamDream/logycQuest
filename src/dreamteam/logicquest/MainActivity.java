@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
-import android.support.v4.view.GestureDetectorCompat;
 
 public class MainActivity extends Activity {
 
@@ -45,7 +44,7 @@ public class MainActivity extends Activity {
         }
 
         setContentView(mGLView);
-       
+        
     }
 
     @Override

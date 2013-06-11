@@ -46,6 +46,9 @@ public enum TextHelper {
  
         textPaint.setAntiAlias(true);
         textPaint.setARGB(0xff, 0x00, 0x00, 0x00);
+        if(text_size > 100) {
+            textPaint.setShadowLayer(12, 12, 12, 0xFF555555); 
+        }
         // draw the text centered
         int offset_x = center ? 100 : left_border;
         int offset_y = center ? 175 : upper_border;
@@ -85,6 +88,7 @@ public enum TextHelper {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
     }
     
