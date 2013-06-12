@@ -16,14 +16,11 @@ public class QuestScene extends Scene {
     QuadImage mBackground;
     Sticker mSticker, aSticker;
     int question_id;
-    //animation part. Need to move it into independent module soon
+    AnimationQuestScene animate;
+    
     float prev_x, prev_y;
     float move_time = 0.0f;
-    float curr_time = 0.0f;
-    float d_x;
-    boolean animate_scene;
-    //
-
+    
     public QuestScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
         mBackground = new QuadImage(aRenderer);
@@ -40,6 +37,8 @@ public class QuestScene extends Scene {
         aSticker.setName("StartGameButton");
         aSticker.setTexture(aRenderer.aQuestionImage);
         aSticker.createBitmap();
+        
+        animate = new AnimationQuestScene(mSticker, aSticker, question_id);
     }
 
     public void onResize(GLRenderer aRenderer) {
@@ -50,13 +49,12 @@ public class QuestScene extends Scene {
     }
 
     public void draw(GLRenderer aRenderer) {
-        updateAnimation();
-
-
-
+        animate.updateAnimation();
+        
         mBackground.draw(aRenderer);
         mSticker.draw(aRenderer);
-        if (animate_scene) {
+        
+        if (animate.isAnimateScene()) {
             aSticker.draw(aRenderer);
         }
     }
@@ -69,7 +67,7 @@ public class QuestScene extends Scene {
     }
 
     public void onTouchMove(float aX, float aY) {
-        if(!animate_scene) {
+        if(!animate.isAnimateScene()) {
             mSticker.onTouchMove(aX, aY);
         }
         move_time += 0.01;
@@ -79,7 +77,7 @@ public class QuestScene extends Scene {
         if (move_time < 0.5f
                 && Math.abs(prev_x - aX) > 0.5f
                 && Math.abs(prev_y - aY) < 0.5f) {//y settings too 
-            startAnimation(aX < prev_x);
+            animate.startAnimation(aX < prev_x);
              
         }
         else {
@@ -94,68 +92,5 @@ public class QuestScene extends Scene {
         question_id = id;
         TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mQuestionImage,
                 question_id, 16, false);
-    }
-
-    public void setDefaultAnimation() {
-        mSticker.translate(0.0f, 0.0f, 0.0f);
-        TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mQuestionImage,
-                question_id, 16, false);
-    }
-
-    public void startAnimation(boolean right) {
-
-        if (question_id <= 0 && !right) { //nothing to animate
-            return;
-        } else {
-            question_id += right ? 1 : -1; //changing page
-        }
-
-        animate_scene = true;
-
-        float start_shift_x1 = 0.0f;
-        float start_shift_x2 = 2.0f * 7.0f;//6.0f???
-
-        float distance = start_shift_x1 - start_shift_x2;//distance between 2 stickers
-
-        curr_time = 0.0f;
-
-        if (right) {
-            d_x = distance;
-        } else {
-            d_x = -distance;
-        }
-
-        aSticker.translate(-d_x, 0.0f, 0.0f); //set starting position
-        TextHelper.INSTANCE.setText(aSticker.bitmap,
-                GLRenderer.INSTANSE.aQuestionImage,
-                question_id, 16, false);
-
-    }
-
-    public void updateAnimation() {
-        if (animate_scene) {
-            if (curr_time > 1.0f) {
-                curr_time = 0.0f;
-                animate_scene = false;
-                setDefaultAnimation();
-                return;
-            }
-
-            curr_time += 0.04f;
-
-            for (int i = 0; i < 9; i++) {
-                float start_shift_x = 0.0f; // magic placement
-                // float a_start_shift_x = start_shift_x;
-
-
-                start_shift_x += d_x * curr_time;
-
-
-                mSticker.translate(start_shift_x, 0.0f, 0.0f);
-
-                float a_start_shift_x = -d_x + d_x * curr_time;//starting position
-                aSticker.translate(a_start_shift_x, 0.0f, 0.0f);
-            }
-        }
     }
 }

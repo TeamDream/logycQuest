@@ -11,7 +11,6 @@ public class MainActivity extends Activity {
     public GLView mGLView;
     public static MainActivity singleton = null;
 
-    
     public MainActivity() {
         singleton = this;
     }
@@ -23,8 +22,8 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGLView = new GLView(this);
-        
-// Check if the system supports OpenGL ES 2.0.
+
+        // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
@@ -44,7 +43,7 @@ public class MainActivity extends Activity {
         }
 
         setContentView(mGLView);
-        
+
     }
 
     @Override
@@ -60,10 +59,9 @@ public class MainActivity extends Activity {
         super.onPause();
         mGLView.onPause();
     }
-    
+
     @Override
     public void onBackPressed() {
         mGLView.onBackPressed();
     }
-  
 }
