@@ -18,9 +18,12 @@ public class AnimationQuestScene {
     protected Sticker mSticker, aSticker;
     protected int question_id;
     
-    AnimationQuestScene(Sticker _mSticker, Sticker _aSticker, int _question_id){
+    AnimationQuestScene(Sticker _mSticker, Sticker _aSticker){
         mSticker = _mSticker;
         aSticker = _aSticker;
+    }
+    
+    public void setQuestionId(int _question_id) {
         question_id = _question_id;
     }
     

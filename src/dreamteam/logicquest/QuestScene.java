@@ -38,7 +38,8 @@ public class QuestScene extends Scene {
         aSticker.setTexture(aRenderer.aQuestionImage);
         aSticker.createBitmap();
         
-        animate = new AnimationQuestScene(mSticker, aSticker, question_id);
+        animate = new AnimationQuestScene(mSticker, aSticker);
+        animate.setQuestionId(question_id);
     }
 
     public void onResize(GLRenderer aRenderer) {
@@ -90,6 +91,7 @@ public class QuestScene extends Scene {
 
     public void updateQuestion(int id) {
         question_id = id;
+        animate.setQuestionId(question_id);
         TextHelper.INSTANCE.setText(mSticker.bitmap, GLRenderer.INSTANSE.mQuestionImage,
                 question_id, 16, false);
     }
