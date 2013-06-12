@@ -50,14 +50,14 @@ public class MainActivity extends Activity {
     protected void onResume() {
         // The activity must call the GL surface view's onResume() on activity onResume().
         super.onResume();
-        mGLView.onResume();
+       // mGLView.onResume();
     }
 
     @Override
     protected void onPause() {
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
-        mGLView.onPause();
+        //mGLView.onPause();
     }
 
     @Override

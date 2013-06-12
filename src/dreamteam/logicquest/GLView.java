@@ -88,8 +88,6 @@ class GLView extends GLSurfaceView  {
      
 }
 
-
-
 class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         
         @Override
