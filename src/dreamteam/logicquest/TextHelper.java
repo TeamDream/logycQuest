@@ -46,7 +46,7 @@ public enum TextHelper {
  
         textPaint.setAntiAlias(true);
         textPaint.setARGB(0xff, 0x00, 0x00, 0x00);
-        if(text_size > 100) {
+        if (text_size > 100) {
             textPaint.setShadowLayer(12, 12, 12, 0xFF555555); 
         }
         // draw the text centered

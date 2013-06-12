@@ -4,49 +4,30 @@
  */
 package dreamteam.logicquest;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 /**
  *
  * @author Дима
  */
-public class Sticker {
+public class Sticker extends TextImage {
 
     private class IndexBuffer {
-
         public ArrayList<Integer> buffer = new ArrayList<Integer>();
     }
     private IndexBuffer[][] mControlPoints;
     public String mName;
-    protected GLRenderer mRenderer;
-    private final FloatBuffer mVertices;
-    public float[] mModelMatrix = new float[16];
-    protected float mScaleParameterX = 1.0f;
-    protected float mScaleParameterY = 1.0f;
-    protected float mScaleParameterZ = 1.0f;
-    protected float mTranslateX = 0.0f;
-    protected float mTranslateY = 0.0f;
-    protected float mTranslateZ = 0.0f;
+    
     private int mVertecesCount = 0;
     private int mQuadsInRaw = 0;
     private int mQuadsInCol = 0;
     private float mTime = 0.f;
     private float mDetalization = 0.f;
-    private final FloatBuffer mTextureCoordinates;
-    protected Bitmap bitmap;
-    /**
-     * This is a handle to our texture data.
-     */
-    private int mTextureDataHandle;
-
+    
     public Sticker(GLRenderer aRenderer, float aDetalization) {
         mRenderer = aRenderer;
         mDetalization = aDetalization;
@@ -175,36 +156,6 @@ public class Sticker {
         mName = aName;
     }
 
-    public void setTexture(int TextureID) {
-
-        mTextureDataHandle = TextureID;
-    }
-
-    public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
-        mScaleParameterX = aScaleParameterX;
-        mScaleParameterY = aScaleParameterY;
-        mScaleParameterZ = aScaleParameterZ;
-    }
-
-    public void translate(float aTranslateX, float aTranslateY, float aTranslateZ) {
-        mTranslateX = aTranslateX;
-        mTranslateY = aTranslateY;
-        mTranslateZ = aTranslateZ;
-    }
-
-    public void createBitmap() {
-        // Create an empty, mutable bitmap
-        bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
-        // get a canvas to paint over the bitmap
-        Canvas canvas = new Canvas(bitmap);
-        bitmap.eraseColor(0);
-        // get a background image from resources
-        // note the image format must match the bitmap format
-        
-        Drawable background = GLRenderer.INSTANSE.mActivityContext.getResources().getDrawable(R.drawable.st1);
-        background.setBounds(0, 0, 256, 256);
-        background.draw(canvas); // draw the background to our bitmap
-    }
     public void draw(GLRenderer aRenderer) {
         float deltaTime = mAnimationDirection * 0.01f;
         update(deltaTime);

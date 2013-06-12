@@ -4,35 +4,16 @@
  */
 package dreamteam.logicquest;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 /**
  *
  * @author Дима
  */
-public class QuadImage {
-
-    protected GLRenderer mRenderer;
-    private final FloatBuffer mVertices;
-    private final FloatBuffer mTextureCoordinates;
-    public float[] mModelMatrix = new float[16];
-    protected float mScaleParameterX = 1.0f;
-    protected float mScaleParameterY = 1.0f;
-    protected float mScaleParameterZ = 1.0f;
-    protected float mTranslateX = 0.0f;
-    protected float mTranslateY = 0.0f;
-    protected float mTranslateZ = 0.0f;
-    protected Bitmap bitmap;
-    /**
-     * This is a handle to our texture data.
-     */
-    private int mTextureDataHandle;
+public class QuadImage extends TextImage{
 
     public QuadImage(GLRenderer aRenderer) {
         mRenderer = aRenderer;
@@ -73,33 +54,7 @@ public class QuadImage {
         mTextureCoordinates.put(textureCoordinateData).position(0);
     }
 
-    public void setTexture(int TextureID) {
-
-        mTextureDataHandle = TextureID;//TextureHelper.loadTexture(MainActivity.singleton, TextureID);
-    }
-
-     public void createBitmap() {
-        // Create an empty, mutable bitmap
-        bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(0);
- }
-
-
-    
-    public void scale(float aScaleParameterX, float aScaleParameterY, float aScaleParameterZ) {
-        mScaleParameterX = aScaleParameterX;
-        mScaleParameterY = aScaleParameterY;
-        mScaleParameterZ = aScaleParameterZ;
-    }
-
-    public void translate(float aTranslateX, float aTranslateY, float aTranslateZ) {
-        mTranslateX = aTranslateX;
-        mTranslateY = aTranslateY;
-        mTranslateZ = aTranslateZ;
-    }
-
     public void draw(GLRenderer aRenderer) {        // Pass in the position information
-
 
         // Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -142,10 +97,6 @@ public class QuadImage {
         Matrix.multiplyMM(aRenderer.mMVPMatrix, 0, aRenderer.mProjectionMatrix, 0, aRenderer.mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(aRenderer.mMVPMatrixHandle, 1, false, aRenderer.mMVPMatrix, 0);
-        
-        
-        // Colors is a pointer to unsigned bytes (4 per color).
-    // Should alternate in opacity.
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
         
