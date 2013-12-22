@@ -2,9 +2,13 @@ package dreamteam.logicquest;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
+import android.os.IBinder;
 
 public class MainActivity extends Activity {
 
@@ -20,7 +24,12 @@ public class MainActivity extends Activity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        
+
+
+       
         mGLView = new GLView(this);
 
         // Check if the system supports OpenGL ES 2.0.
@@ -57,6 +66,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
+        //doUnbindService();
         //mGLView.onPause();
     }
 
@@ -64,4 +74,33 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         mGLView.onBackPressed();
     }
+    
+    private boolean mIsBound = false;
+private MusicService mServ;
+private ServiceConnection Scon =new ServiceConnection(){
+
+	public void onServiceConnected(ComponentName name, IBinder
+     binder) {
+	mServ = ((MusicService.ServiceBinder) binder).getService();
+	}
+
+	public void onServiceDisconnected(ComponentName name) {
+		mServ = null;
+	}
+	};
+
+	void doBindService(){
+ 		bindService(new Intent(this,MusicService.class),
+				Scon,Context.BIND_AUTO_CREATE);
+		mIsBound = true;
+	}
+
+	void doUnbindService()
+	{
+		if(mIsBound)
+		{
+			unbindService(Scon);
+      		mIsBound = false;
+		}
+	}
 }
