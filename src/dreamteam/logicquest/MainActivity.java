@@ -27,7 +27,11 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         
+             doBindService();
+     Intent music = new Intent();
+music.setClass(this,MusicService.class);
 
+startService(music);
 
        
         mGLView = new GLView(this);
