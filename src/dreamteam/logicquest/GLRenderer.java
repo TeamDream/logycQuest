@@ -166,7 +166,9 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
         // Load the texture
 
         mTextureDataHandle = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.images);
-        mMenuImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher);
+        mMenuImage_s = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher_s);
+        mMenuImage_se = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher_se);
+        mMenuImage_e = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.ic_launcher_e);
         mQuestionImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
         aQuestionImage = TextureHelper.loadTexture(MainActivity.singleton, R.drawable.st1);
         
@@ -264,7 +266,9 @@ public enum GLRenderer implements android.opengl.GLSurfaceView.Renderer {
      * This is a handle to our texture data.
      */
     protected int mTextureDataHandle;
-    protected int mMenuImage;
+    protected int mMenuImage_s;
+    protected int mMenuImage_se;
+    protected int mMenuImage_e;
     protected int mQuestionImage;
     protected int aQuestionImage;
     protected int[] mTextureLevelDataHandle = new int[9];

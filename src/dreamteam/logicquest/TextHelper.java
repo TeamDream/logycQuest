@@ -7,6 +7,7 @@ package dreamteam.logicquest;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
@@ -41,9 +42,8 @@ public enum TextHelper {
 
         // Draw the text
         Paint textPaint = new Paint();
- 
+        textPaint.setTypeface(Typeface.SANS_SERIF);
         textPaint.setTextSize(text_size);
- 
         textPaint.setAntiAlias(true);
         textPaint.setARGB(0xff, 0x00, 0x00, 0x00);
         if (text_size > 100) {

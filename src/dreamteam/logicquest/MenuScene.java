@@ -18,6 +18,7 @@ public class MenuScene extends Scene {
      */
     Button[] mButtons = new Button[3];
     QuadImage mBackground;
+    boolean play = true;
 
     public MenuScene(GLRenderer aRenderer) {
         // Define points for equilateral triangles.
@@ -31,12 +32,15 @@ public class MenuScene extends Scene {
                 i < 3; ++i) {
             mButtons[i] = new Button(aRenderer);
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
-            mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
-            mButtons[i].setTexture(aRenderer.mMenuImage);
+            mButtons[i].scale(0.4f * scale_val_x, 0.4f * scale_val_x, 1.0f);
         }
+        mButtons[0].setTexture(aRenderer.mMenuImage_s);
+        mButtons[1].setTexture(aRenderer.mMenuImage_se);
+        mButtons[2].setTexture(aRenderer.mMenuImage_e);
+        
         mButtons[0].setName("StartGameButton");
-        mButtons[1].setName("some name");
-        mButtons[2].setName("some name");
+        mButtons[1].setName("SettingsButton");
+        mButtons[2].setName("ExitGameButton");
     }
 
     public void onResize(GLRenderer aRenderer) {
@@ -45,9 +49,12 @@ public class MenuScene extends Scene {
        
         for (int i = 0; i < 3; ++i) {
             mButtons[i].translate(0.f, 6.f - 6 * i, 0.f);
-            mButtons[i].scale(0.16f * scale_val_x, 0.16f * scale_val_x, 1.0f);
-            mButtons[i].setTexture(aRenderer.mMenuImage);
+            mButtons[i].scale(0.4f * scale_val_x, 0.4f * scale_val_x, 1.0f);
         }
+        mButtons[0].setTexture(aRenderer.mMenuImage_s);
+        mButtons[1].setTexture(aRenderer.mMenuImage_se);
+        mButtons[2].setTexture(aRenderer.mMenuImage_e);
+        
         
         mBackground.scale(aRenderer.mRatio * aRenderer.mScreenSize, aRenderer.mScreenSize, 1.f);
      
@@ -86,5 +93,9 @@ public class MenuScene extends Scene {
         if (aButton.mName.equals("StartGameButton")) {
             GLRenderer.INSTANSE.changeSceneType(GLRenderer.SceneType.LEVEL_SCENE);
         }
+        if (aButton.mName.equals("ExitGameButton")) {
+            System.exit(0);
+        }
+
     }
 }

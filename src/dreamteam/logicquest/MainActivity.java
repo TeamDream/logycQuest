@@ -79,8 +79,16 @@ startService(music);
         mGLView.onBackPressed();
     }
     
+        @Override
+	public void onDestroy()
+	{
+            mServ.stopMusic();
+            doUnbindService();
+	}
+    
+    
     private boolean mIsBound = false;
-private MusicService mServ;
+public MusicService mServ;
 private ServiceConnection Scon =new ServiceConnection(){
 
 	public void onServiceConnected(ComponentName name, IBinder
